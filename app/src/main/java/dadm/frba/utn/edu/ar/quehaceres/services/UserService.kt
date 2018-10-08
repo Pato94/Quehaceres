@@ -25,6 +25,7 @@ class UserService(private val storageService: StorageService, private val apiSer
                     storageService.storeUser(User(email))
                     storageService.storeUserToken(it.token)
                 }
+                .doOnError { it.printStackTrace() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map { Any() }

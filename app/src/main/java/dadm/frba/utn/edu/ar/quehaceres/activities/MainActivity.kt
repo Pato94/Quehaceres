@@ -30,7 +30,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     val groupsService: GroupsService by lazy { GroupsService() }
-    val adapter: GroupsAdapter by lazy { GroupsAdapter() }
+    val adapter: GroupsAdapter by lazy {
+        GroupsAdapter {
+            startActivity(GroupActivity.newIntent(it, this@MainActivity))
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
