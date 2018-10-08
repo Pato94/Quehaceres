@@ -24,8 +24,8 @@
   <string name="nav_header_desc">Navigation header</string>
   <string name="action_settings">Settings</string>
   <string name="title_activity_group">GroupActivity</string>
-  <string name="tab_text_1">Tab 1</string>
-  <string name="tab_text_2">Tab 2</string>
-  <string name="tab_text_3">Tab 3</string>
+  <string name="tab_available">DISPONIBLES</string>
+  <string name="tab_my_tasks">MIS TAREAS</string>
+  <string name="tab_group">GRUPO</string>
   <string name="section_format">Hello World from section: %1$d</string>
 </resources>

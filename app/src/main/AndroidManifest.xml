@@ -30,7 +30,7 @@
     <activity
       android:name=".activities.GroupActivity"
       android:label="@string/title_activity_group"
-      android:theme="@style/AppTheme.NoActionBar"></activity>
+      android:theme="@style/AppTheme.NoActionBar"/>
   </application>
 
 </manifest>

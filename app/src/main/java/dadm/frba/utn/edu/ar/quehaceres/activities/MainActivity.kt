@@ -1,5 +1,6 @@
 package dadm.frba.utn.edu.ar.quehaceres.activities
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -18,7 +19,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import android.support.v7.widget.DividerItemDecoration
-
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -48,7 +48,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         recycler_view.adapter = adapter
 
-        val itemDecor = DividerItemDecoration(this,DividerItemDecoration.VERTICAL )
+        val itemDecor = DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         recycler_view.addItemDecoration(itemDecor)
 
         val toggle = ActionBarDrawerToggle(
@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
     }
 
+    @SuppressLint("CheckResult")
     override fun onResume() {
         super.onResume()
 
