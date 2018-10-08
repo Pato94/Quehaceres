@@ -74,7 +74,9 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.OnListFragment
         // as you specify a parent activity in AndroidManifest.xml.
         val id = item.itemId
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_notifications) {
+            val intent = NotificationsActivity.newIntent(this)
+            startActivity(intent)
             return true
         }
 

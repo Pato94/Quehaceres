@@ -3,8 +3,8 @@
   xmlns:tools="http://schemas.android.com/tools"
   tools:context="dadm.frba.utn.edu.ar.quehaceres.activities.GroupActivity">
   <item
-    android:id="@+id/action_settings"
+    android:id="@+id/action_notifications"
     android:orderInCategory="100"
-    android:title="@string/action_settings"
+    android:title="@string/action_notifications"
     app:showAsAction="never" />
 </menu>
