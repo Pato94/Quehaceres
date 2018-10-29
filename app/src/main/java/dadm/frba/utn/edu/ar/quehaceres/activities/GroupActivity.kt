@@ -2,9 +2,9 @@ package dadm.frba.utn.edu.ar.quehaceres.activities
 
 import android.Manifest
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
 
@@ -12,11 +12,13 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
+import android.provider.MediaStore
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ImageView
 import android.widget.Toast
 
 import dadm.frba.utn.edu.ar.quehaceres.R
@@ -51,7 +53,8 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
   }
 
   companion object {
-    const val CAMERA_REQUEST_ID = 1001
+    const val CAMERA_PERMISSION_REQUEST = 1001
+    const val CAPTURE_IMAGE_REQUEST = 1002
 
     fun newIntent(group: Group, context: Context): Intent {
       val intent = Intent(context, GroupActivity::class.java)
@@ -87,7 +90,7 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
       if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
         // TODO
       } else {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_REQUEST_ID)
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_REQUEST)
       }
     } else {
       startVerification()
@@ -95,12 +98,38 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
   }
 
   private fun startVerification() {
-    Toast.makeText(this, "Tenemos permiso", Toast.LENGTH_SHORT).show()
+    Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+      takePictureIntent.resolveActivity(packageManager)?.also {
+        startActivityForResult(takePictureIntent, CAPTURE_IMAGE_REQUEST)
+      }
+    }
+  }
+
+  override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    when {
+      requestCode == CAPTURE_IMAGE_REQUEST && resultCode == RESULT_OK -> {
+        @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
+        val imageBitmap = data!!.extras.get("data") as Bitmap
+        confirmImage(imageBitmap)
+      }
+    }
+  }
+
+  private fun confirmImage(imageBitmap: Bitmap) {
+    val view = ImageView(this)
+    view.setImageBitmap(imageBitmap)
+
+    AlertDialog.Builder(this)
+        .setTitle("Esta imagen es correcta?")
+        .setView(view)
+        .setPositiveButton("Confirmar", { _, _ -> Toast.makeText(this, "Confirmed", Toast.LENGTH_SHORT).show() })
+        .setNegativeButton("Cancelar", { d, _ -> d.dismiss() })
+        .show()
   }
 
   override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
     when (requestCode) {
-      CAMERA_REQUEST_ID -> {
+      CAMERA_PERMISSION_REQUEST -> {
         // If request is cancelled, the result arrays are empty.
         if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
           startVerification()
