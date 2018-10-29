@@ -59,7 +59,7 @@ class SelectMembersFragment : Fragment() {
     if (context is OnListFragmentInteractionListener) {
       listener = context
     } else {
-      throw RuntimeException(context.toString() + " must implement OnListFragmentInteractionListener")
+      throw RuntimeException(context.toString() + " must implement Listener")
     }
   }
 

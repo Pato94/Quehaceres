@@ -1,20 +1,19 @@
 package dadm.frba.utn.edu.ar.quehaceres.activities
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.support.design.widget.TabLayout
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.os.Bundle
-import android.view.LayoutInflater
+import android.support.v7.app.AlertDialog
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.view.ViewGroup
+import android.widget.Toast
 
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.fragments.AvailableTasksFragment
@@ -22,9 +21,24 @@ import dadm.frba.utn.edu.ar.quehaceres.fragments.MyTasksFragment
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent
 import dadm.frba.utn.edu.ar.quehaceres.models.Group
 import kotlinx.android.synthetic.main.activity_group.*
-import kotlinx.android.synthetic.main.fragment_group.view.*
 
-class GroupActivity : AppCompatActivity(), AvailableTasksFragment.OnListFragmentInteractionListener {
+class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTasksFragment.Listener {
+
+    override fun onMyTaskClicked(item: DummyContent.DummyItem?) {
+        AlertDialog.Builder(this)
+            .setMessage(item!!.content)
+            .setPositiveButton("Verificar") { _, _ -> Toast.makeText(this, "Verificar clicked", Toast.LENGTH_SHORT).show() }
+            .setNegativeButton("Cancelar") { d, _ -> d.dismiss() }
+            .show()
+    }
+
+    override fun onAvailableTaskClicked(item: DummyContent.DummyItem?) {
+        AlertDialog.Builder(this)
+            .setMessage(item!!.content)
+            .setPositiveButton("Asignar") { _, _ -> Toast.makeText(this, "Asignar clicked", Toast.LENGTH_SHORT).show() }
+            .setNegativeButton("Cancelar") { d, _ -> d.dismiss() }
+            .show()
+    }
 
     companion object {
         fun newIntent(group: Group, context: Context): Intent {
@@ -90,9 +104,5 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.OnListFragment
         override fun getCount(): Int {
             return 2
         }
-    }
-
-    override fun onListFragmentInteraction(item: DummyContent.DummyItem?) {
-//        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }
