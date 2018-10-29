@@ -37,6 +37,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:src="@android:drawable/arrow_down_float"
+        android:src="@drawable/ic_arrow_right_white"
         android:layout_margin="32dp"/>
 </RelativeLayout>
