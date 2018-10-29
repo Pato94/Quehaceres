@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import dadm.frba.utn.edu.ar.quehaceres.R
@@ -24,6 +25,8 @@ class SelectMemberPointsFragment : Fragment() {
       @Suppress("UNCHECKED_CAST")
       selectedMembers = it.getSerializable(ARG_SELECTED_MEMBERS) as ArrayList<DummyItem>
     }
+
+    setHasOptionsMenu(true)
   }
 
   override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -41,6 +44,11 @@ class SelectMemberPointsFragment : Fragment() {
       }
     }
     return view
+  }
+
+  override fun onPrepareOptionsMenu(menu: Menu?) {
+    super.onPrepareOptionsMenu(menu)
+    activity?.title = "Crear Grupo"
   }
 
   override fun onAttach(context: Context) {
