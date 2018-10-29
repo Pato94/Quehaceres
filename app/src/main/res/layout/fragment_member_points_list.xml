@@ -7,12 +7,19 @@
     android:layout_height="match_parent"
     >
 
+    <EditText
+        android:id="@+id/group_name"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_margin="12dp"
+        android:hint="Elige un nombre para el grupo" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
         android:name="dadm.frba.utn.edu.ar.quehaceres.fragments.SelectMembersFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/selected_list"
+        android:layout_below="@id/group_name"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"

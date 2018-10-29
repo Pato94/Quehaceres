@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import dadm.frba.utn.edu.ar.quehaceres.R
 
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent.DummyItem
@@ -38,9 +39,15 @@ class SelectMemberPointsFragment : Fragment() {
       adapter = MemberPointsRecyclerViewAdapter(selectedMembers, listener)
     }
 
+    val groupName = view.findViewById<EditText>(R.id.group_name)
+
     with(view.findViewById<FloatingActionButton>(R.id.next)) {
       setOnClickListener {
-        activity?.finish()
+        if (groupName.text.toString().isEmpty()) {
+          groupName.error = "Elige un nombre para el grupo"
+        } else {
+          activity?.finish()
+        }
       }
     }
     return view
