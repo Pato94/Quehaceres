@@ -5,10 +5,11 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import dadm.frba.utn.edu.ar.quehaceres.R
+import dadm.frba.utn.edu.ar.quehaceres.fragments.SelectMemberPointsFragment
 import dadm.frba.utn.edu.ar.quehaceres.fragments.SelectMembersFragment
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent
 
-class CreateGroupActivity : AppCompatActivity(), SelectMembersFragment.OnListFragmentInteractionListener {
+class CreateGroupActivity : AppCompatActivity(), SelectMembersFragment.OnListFragmentInteractionListener, SelectMemberPointsFragment.OnListFragmentInteractionListener {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -20,12 +21,13 @@ class CreateGroupActivity : AppCompatActivity(), SelectMembersFragment.OnListFra
     }
   }
 
-  override fun onListFragmentInteraction(item: DummyContent.DummyItem?) {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+  override fun onPointsSelected(selected: List<DummyContent.DummyItem>) {
   }
 
   override fun onMembersSelected(selected: List<DummyContent.DummyItem>) {
-    TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    supportFragmentManager.beginTransaction()
+        .replace(R.id.container, SelectMemberPointsFragment.newInstance(selected))
+        .commitNow()
   }
 
   companion object {

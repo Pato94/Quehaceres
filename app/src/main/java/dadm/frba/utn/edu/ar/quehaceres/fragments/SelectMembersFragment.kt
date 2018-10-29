@@ -2,9 +2,8 @@ package dadm.frba.utn.edu.ar.quehaceres.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +44,13 @@ class SelectMembersFragment : Fragment() {
         selectedAdapter!!.notifyDataSetChanged()
       }
     }
+
+    with(view.findViewById<FloatingActionButton>(R.id.next)) {
+      setOnClickListener {
+        listener?.onMembersSelected(selectedMembers)
+      }
+    }
+
     return view
   }
 
@@ -74,7 +80,6 @@ class SelectMembersFragment : Fragment() {
    * for more information.
    */
   interface OnListFragmentInteractionListener {
-    fun onListFragmentInteraction(item: DummyItem?)
     fun onMembersSelected(selected: List<DummyItem>)
   }
 
