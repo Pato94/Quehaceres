@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import dadm.frba.utn.edu.ar.quehaceres.R
 
-
 import dadm.frba.utn.edu.ar.quehaceres.fragments.SelectMembersFragment.OnListFragmentInteractionListener
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent.DummyItem
 
@@ -42,7 +41,7 @@ class MembersRecyclerViewAdapter(
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
     val item = mValues[position]
-    holder.mIdView.text = item.id
+//    holder.mIdView.text = item.id
     holder.mContentView.text = item.content
 
     with(holder.mView) {
@@ -54,7 +53,7 @@ class MembersRecyclerViewAdapter(
   override fun getItemCount(): Int = mValues.size
 
   inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-    val mIdView: TextView = mView.item_number
+//    val mIdView: TextView = mView.item_number
     val mContentView: TextView = mView.content
 
     override fun toString(): String {
