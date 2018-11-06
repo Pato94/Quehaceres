@@ -1,20 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content"
-  android:orientation="horizontal">
+<LinearLayout     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+  <!--TODO: Adapt to notification icon-->
+     <LinearLayout
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginTop="6dp"
+         android:orientation="horizontal">
+
+         <de.hdodenhof.circleimageview.CircleImageView
+             android:layout_width="14dp"
+             android:layout_height="14dp"
+             android:src="@mipmap/ic_launcher" />
+
+         <TextView
+             android:id="@+id/tv_task_description"
+             android:layout_width="wrap_content"
+             android:layout_height="match_parent"
+             android:textAppearance="?attr/textAppearanceListItem"
+             android:textSize="12sp"
+             android:layout_marginLeft="10dp"
+             android:layout_gravity="center_vertical"
+             tools:text="Verificar Tarea 1" />
+
+     </LinearLayout>
 
   <TextView
-    android:id="@+id/item_number"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/text_margin"
-    android:textAppearance="?attr/textAppearanceListItem" />
+      android:id="@+id/tv_task_headline"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginTop="@dimen/notification_text_margin"
+      android:textAppearance="?attr/textAppearanceListItem"
+      android:textSize="18sp"
+      tools:text="Limpieza de Baño"/>
 
   <TextView
-    android:id="@+id/content"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/text_margin"
-    android:textAppearance="?attr/textAppearanceListItem" />
+      android:id="@+id/tv_task_action"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_marginBottom="6dp"
+      android:textAppearance="?attr/textAppearanceListItem"
+      android:textColor="@color/notification_description_color"
+      android:textSize="14sp"
+      tools:text="Verificar que se haya limpiado el baño"/>
+
 </LinearLayout>
