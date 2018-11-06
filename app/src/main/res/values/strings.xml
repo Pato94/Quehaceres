@@ -28,4 +28,6 @@
     <string name="tab_my_tasks">MIS TAREAS</string>
     <string name="tab_group">GRUPO</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="action_change_member">CAMBIAR</string>
+
 </resources>

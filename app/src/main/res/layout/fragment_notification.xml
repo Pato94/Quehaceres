@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="12dp">
 
   <!--TODO: Adapt to notification icon-->
      <LinearLayout
@@ -44,7 +45,7 @@
       android:layout_height="wrap_content"
       android:layout_marginBottom="6dp"
       android:textAppearance="?attr/textAppearanceListItem"
-      android:textColor="@color/notification_description_color"
+      android:textColor="@color/description_color"
       android:textSize="14sp"
       tools:text="Verificar que se haya limpiado el baño"/>
 
