@@ -9,8 +9,11 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
 import dadm.frba.utn.edu.ar.quehaceres.R
+import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.services.StorageService
 import dadm.frba.utn.edu.ar.quehaceres.services.UserService
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
 
 /**
@@ -19,6 +22,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 class LoginActivity : AppCompatActivity() {
 
     val userService by lazy { UserService(StorageService(this)) }
+    val api by lazy { Api().api }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,19 +40,33 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun attemptLogin() {
-        userService
-                .loginUser(email.text.toString(), password.text.toString())
-                .doOnSubscribe { showProgress(true) }
-                .subscribe(
-                        {
-                            showProgress(false)
-                            goToMainActivity()
-                        },
-                        {
-                            showProgress(false)
-                            Toast.makeText(this@LoginActivity, "ERROR", Toast.LENGTH_SHORT).show()
-                        }
-                )
+      val result = api.login(Api.LoginRequest(email.text.toString(), password.text.toString()))
+          .subscribeOn(Schedulers.io())
+          .observeOn(AndroidSchedulers.mainThread())
+          .doOnSubscribe { showProgress(true) }
+          .subscribe(
+                  {
+                      showProgress(false)
+                      goToMainActivity()
+                  },
+                  {
+                      showProgress(false)
+                      Toast.makeText(this@LoginActivity, "ERROR", Toast.LENGTH_SHORT).show()
+                  }
+          )
+//        userService
+//                .loginUser(email.text.toString(), password.text.toString())
+//                .doOnSubscribe { showProgress(true) }
+//                .subscribe(
+//                        {
+//                            showProgress(false)
+//                            goToMainActivity()
+//                        },
+//                        {
+//                            showProgress(false)
+//                            Toast.makeText(this@LoginActivity, "ERROR", Toast.LENGTH_SHORT).show()
+//                        }
+//                )
     }
 
     private fun goToMainActivity() {

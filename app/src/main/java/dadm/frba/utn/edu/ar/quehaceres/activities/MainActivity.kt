@@ -19,6 +19,9 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import android.support.v7.widget.DividerItemDecoration
+import dadm.frba.utn.edu.ar.quehaceres.api.Api
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -30,6 +33,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     val groupsService: GroupsService by lazy { GroupsService() }
+    val api by lazy { Api().api }
     val adapter: GroupsAdapter by lazy {
         GroupsAdapter {
             startActivity(GroupActivity.newIntent(it, this@MainActivity))
@@ -62,7 +66,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
 
-        groupsService.getGroups()
+//        groupsService.getGroups()
+            api.myGroups(1)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { showLoading(true) }
                 .subscribe(
                         {

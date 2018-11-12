@@ -22,6 +22,7 @@ import android.widget.ImageView
 import android.widget.Toast
 
 import dadm.frba.utn.edu.ar.quehaceres.R
+import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.fragments.AvailableTasksFragment
 import dadm.frba.utn.edu.ar.quehaceres.fragments.MyTasksFragment
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent
@@ -56,7 +57,7 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
     const val CAMERA_PERMISSION_REQUEST = 1001
     const val CAPTURE_IMAGE_REQUEST = 1002
 
-    fun newIntent(group: Group, context: Context): Intent {
+    fun newIntent(group: Api.Group, context: Context): Intent {
       val intent = Intent(context, GroupActivity::class.java)
       intent.putExtra("GROUP", group)
       return intent
@@ -71,7 +72,7 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
   }
 
   private fun setUpViews() {
-    val group = intent.getParcelableExtra<Group>("GROUP")
+    val group = intent.getParcelableExtra<Api.Group>("GROUP")
     setSupportActionBar(toolbar)
     supportActionBar?.title = group.name
 
