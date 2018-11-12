@@ -10,6 +10,7 @@ import dadm.frba.utn.edu.ar.quehaceres.R
 
 import dadm.frba.utn.edu.ar.quehaceres.fragments.SelectMemberPointsFragment.OnListFragmentInteractionListener
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent.DummyItem
+import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.MemberPoints
 
 import kotlinx.android.synthetic.main.fragment_member_points.view.*
 
@@ -19,7 +20,7 @@ import kotlinx.android.synthetic.main.fragment_member_points.view.*
  * TODO: Replace the implementation with code for your data type.
  */
 class MemberPointsRecyclerViewAdapter(
-    private val mValues: List<DummyItem>,
+    private val mValues: List<MemberPoints>,
     private val mListener: OnListFragmentInteractionListener?)
   : RecyclerView.Adapter<MemberPointsRecyclerViewAdapter.ViewHolder>() {
 
@@ -42,8 +43,9 @@ class MemberPointsRecyclerViewAdapter(
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
     val item = mValues[position]
-    holder.mIdView.text = item.id
-    holder.mContentView.text = item.content
+//    holder.mIdView.text = item.id
+    holder.mMemberView.text = item.name
+    holder.mPointsView.text = item.points
 
     with(holder.mView) {
       tag = item
@@ -54,11 +56,12 @@ class MemberPointsRecyclerViewAdapter(
   override fun getItemCount(): Int = mValues.size
 
   inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-    val mIdView: TextView = mView.item_number
-    val mContentView: TextView = mView.content
+//    val mIdView: TextView = mView.item_number
+    val mMemberView: TextView = mView.findViewById(R.id.tv_member_name)
+    val mPointsView: TextView = mView.findViewById(R.id.tv_member_points)
 
     override fun toString(): String {
-      return super.toString() + " '" + mContentView.text + "'"
+      return super.toString() + " '" + mView.toString() + "'"
     }
   }
 }
