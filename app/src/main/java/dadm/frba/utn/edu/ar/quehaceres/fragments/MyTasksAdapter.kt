@@ -9,7 +9,7 @@ import dadm.frba.utn.edu.ar.quehaceres.R
 
 
 import dadm.frba.utn.edu.ar.quehaceres.fragments.MyTasksFragment.Listener
-import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent.DummyItem
+import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.AvailableTask
 
 import kotlinx.android.synthetic.main.fragment_availabletasks.view.*
 
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.fragment_availabletasks.view.*
  * TODO: Replace the implementation with code for your data type.
  */
 class MyTasksAdapter(
-    private val mValues: List<DummyItem>,
+    private val mValues: List<AvailableTask.AvailableTaskItem>,
     private val mListener: Listener?)
   : RecyclerView.Adapter<MyTasksAdapter.ViewHolder>() {
 
@@ -27,7 +27,7 @@ class MyTasksAdapter(
 
   init {
     mOnClickListener = View.OnClickListener { v ->
-      val item = v.tag as DummyItem
+      val item = v.tag as AvailableTask.AvailableTaskItem
       // Notify the active callbacks interface (the activity, if the fragment is attached to
       // one) that an item has been selected.
       mListener?.onMyTaskClicked(item)
@@ -42,8 +42,8 @@ class MyTasksAdapter(
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
     val item = mValues[position]
-    holder.mIdView.text = item.id
-    holder.mContentView.text = item.content
+    holder.mCoinsView.text = item.coins
+    holder.mTaskView.text = item.task
 
     with(holder.mView) {
       tag = item
@@ -54,11 +54,11 @@ class MyTasksAdapter(
   override fun getItemCount(): Int = mValues.size
 
   inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-    val mIdView: TextView = mView.item_number
-    val mContentView: TextView = mView.content
+    val mCoinsView: TextView = mView.tv_coins
+    val mTaskView: TextView = mView.tv_task
 
     override fun toString(): String {
-      return super.toString() + " '" + mContentView.text + "'"
+      return super.toString() + " '" + mTaskView.text + "'"
     }
   }
 }

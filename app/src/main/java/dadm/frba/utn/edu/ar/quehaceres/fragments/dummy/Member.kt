@@ -20,7 +20,7 @@ object Member {
     init {
         // Add some sample items.
         for (i in 1..COUNT) {
-            addItem(createDummyItem(i))
+            addItem(createMemberItem(i))
         }
     }
 
@@ -30,7 +30,8 @@ object Member {
         ITEM_MAP.put(item.id, item)
     }
 
-    private fun createDummyItem(position: Int): MemberItem {
+    //TODO: Replace dummy with actual Member creation
+    private fun createMemberItem(position: Int): MemberItem {
         return MemberItem(position.toString(), "Item " + position)
     }
 
@@ -44,7 +45,7 @@ object Member {
     }
 
     /**
-     * A Member-Points representing a piece of content.
+     * A Member representing a piece of content.
      */
     data class MemberItem(val id: String, val name: String) {
         override fun toString(): String {

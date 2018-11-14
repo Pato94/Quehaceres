@@ -23,7 +23,7 @@ object AvailableTask {
     init {
         // Add some sample items.
         for (i in 1..COUNT) {
-            addItem(createDummyItem(i))
+            addItem(createAvailableTaskItem(i))
         }
     }
 
@@ -33,7 +33,8 @@ object AvailableTask {
         ITEM_MAP.put(item.id, item)
     }
 
-    private fun createDummyItem(position: Int): AvailableTaskItem {
+    //TODO: Replace dummy with actual AvailableTask creation
+    private fun createAvailableTaskItem(position: Int): AvailableTaskItem {
         return AvailableTaskItem(position.toString(), "Item " + position, makeDetails(position))
     }
 

@@ -24,28 +24,30 @@ import android.widget.Toast
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.fragments.AvailableTasksFragment
 import dadm.frba.utn.edu.ar.quehaceres.fragments.MyTasksFragment
+import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.AvailableTask
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent
+import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.Member
 import dadm.frba.utn.edu.ar.quehaceres.models.Group
 import kotlinx.android.synthetic.main.activity_group.*
 
 class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTasksFragment.Listener {
 
-  override fun onMyTaskClicked(item: DummyContent.DummyItem?) {
+  override fun onMyTaskClicked(item: AvailableTask.AvailableTaskItem?) {
     item?.let {
       AlertDialog.Builder(this)
           .setTitle(it.id)
-          .setMessage(it.content)
+          .setMessage(it.task)
           .setPositiveButton("Verificar") { _, _ -> onVerifyClicked() }
           .setNegativeButton("Cancelar") { d, _ -> d.dismiss() }
           .show()
     }
   }
 
-  override fun onAvailableTaskClicked(item: DummyContent.DummyItem?) {
+  override fun onAvailableTaskClicked(item: AvailableTask.AvailableTaskItem?) {
     item?.let {
       AlertDialog.Builder(this)
           .setTitle(it.id)
-          .setMessage(it.content)
+          .setMessage(it.task)
           .setPositiveButton("Asignar") { _, _ -> Toast.makeText(this, "Asignar clicked", Toast.LENGTH_SHORT).show() }
           .setNegativeButton("Cancelar") { d, _ -> d.dismiss() }
           .show()

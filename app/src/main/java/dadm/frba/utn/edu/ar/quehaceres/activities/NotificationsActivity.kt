@@ -7,6 +7,7 @@ import android.os.Bundle
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.fragments.NotificationsFragment
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent
+import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.Notification
 
 class NotificationsActivity : AppCompatActivity(), NotificationsFragment.OnListFragmentInteractionListener {
 
@@ -26,6 +27,6 @@ class NotificationsActivity : AppCompatActivity(), NotificationsFragment.OnListF
         }
     }
 
-    override fun onListFragmentInteraction(item: DummyContent.DummyItem?) {
+    override fun onListFragmentInteraction(item: Notification.NotificationItem?) {
     }
 }

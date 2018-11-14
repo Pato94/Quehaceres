@@ -11,12 +11,12 @@ import java.util.HashMap
 object MemberPoints {
 
     /**
-     * An array of sample (dummy) items.
+     * An array of sample MemberPointItem's.
      */
     val ITEMS: MutableList<MemberPointsItem> = ArrayList()
 
     /**
-     * A map of sample (dummy) items, by ID.
+     * A map of sample MemberPointItem's, by ID.
      */
     val ITEM_MAP: MutableMap<String, MemberPointsItem> = HashMap()
 
@@ -25,7 +25,7 @@ object MemberPoints {
     init {
         // Add some sample items.
         for (i in 1..COUNT) {
-            addItem(createDummyItem(i))
+            addItem(createMemberPointsItem(i))
         }
     }
 
@@ -35,7 +35,8 @@ object MemberPoints {
         ITEM_MAP.put(item.id, item)
     }
 
-    private fun createDummyItem(position: Int): MemberPointsItem {
+    //TODO: Replace dummy with actual MemberPoints creation
+    private fun createMemberPointsItem(position: Int): MemberPointsItem {
         return MemberPointsItem(position.toString(), "Item " + position, makeDetails(position))
     }
 
@@ -49,7 +50,7 @@ object MemberPoints {
     }
 
     /**
-     * A Member-Points representing a piece of content.
+     * A MemberPoint representing a piece of content.
      */
     data class MemberPointsItem(val id: String, val name: String, val weeklyPoints: String) {
         override fun toString(): String {
