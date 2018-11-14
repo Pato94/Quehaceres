@@ -13,11 +13,12 @@ import android.widget.EditText
 import dadm.frba.utn.edu.ar.quehaceres.R
 
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent.DummyItem
+import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.Member
 
 class SelectMemberPointsFragment : Fragment() {
 
   private var listener: OnListFragmentInteractionListener? = null
-  private lateinit var selectedMembers: List<DummyItem>
+  private lateinit var selectedMembers: List<Member.MemberItem>
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)

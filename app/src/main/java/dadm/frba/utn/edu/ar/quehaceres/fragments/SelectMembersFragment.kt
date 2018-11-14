@@ -13,6 +13,7 @@ import dadm.frba.utn.edu.ar.quehaceres.R
 
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent.DummyItem
+import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.Member
 import java.util.*
 
 /**
@@ -23,7 +24,7 @@ import java.util.*
 class SelectMembersFragment : Fragment() {
 
   private var listener: OnListFragmentInteractionListener? = null
-  private val selectedMembers = LinkedList<DummyItem>()
+  private val selectedMembers = LinkedList<Member.MemberItem>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -50,7 +51,7 @@ class SelectMembersFragment : Fragment() {
     }
 
     with(view.findViewById<RecyclerView>(R.id.list)) {
-      adapter = MembersRecyclerViewAdapter(DummyContent.ITEMS) { member ->
+      adapter = MembersRecyclerViewAdapter(Member.ITEMS) { member ->
         selectedMembers.add(member)
         selectedAdapter!!.notifyDataSetChanged()
       }
@@ -91,7 +92,7 @@ class SelectMembersFragment : Fragment() {
    * for more information.
    */
   interface OnListFragmentInteractionListener {
-    fun onMembersSelected(selected: List<DummyItem>)
+    fun onMembersSelected(selected: List<Member.MemberItem>)
   }
 
   companion object {

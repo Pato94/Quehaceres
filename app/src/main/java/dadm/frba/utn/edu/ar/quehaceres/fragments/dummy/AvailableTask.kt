@@ -1,24 +1,22 @@
 package dadm.frba.utn.edu.ar.quehaceres.fragments.dummy
 
-
 import android.content.res.Resources
 import dadm.frba.utn.edu.ar.quehaceres.R
 import java.util.ArrayList
 import java.util.HashMap
 
+object AvailableTask {
 
-
-object MemberPoints {
 
     /**
-     * An array of sample (dummy) items.
+     * An array of sample AvailableTaskItem's.
      */
-    val ITEMS: MutableList<MemberPointsItem> = ArrayList()
+    val ITEMS: MutableList<AvailableTaskItem> = ArrayList()
 
     /**
-     * A map of sample (dummy) items, by ID.
+     * A map of sample AvailableTaskItem's, by ID.
      */
-    val ITEM_MAP: MutableMap<String, MemberPointsItem> = HashMap()
+    val ITEM_MAP: MutableMap<String, AvailableTaskItem> = HashMap()
 
     private val COUNT = 25
 
@@ -30,13 +28,13 @@ object MemberPoints {
     }
 
 
-    private fun addItem(item: MemberPointsItem) {
+    private fun addItem(item: AvailableTaskItem) {
         ITEMS.add(item)
         ITEM_MAP.put(item.id, item)
     }
 
-    private fun createDummyItem(position: Int): MemberPointsItem {
-        return MemberPointsItem(position.toString(), "Item " + position, makeDetails(position))
+    private fun createDummyItem(position: Int): AvailableTaskItem {
+        return AvailableTaskItem(position.toString(), "Item " + position, makeDetails(position))
     }
 
     private fun makeDetails(position: Int): String {
@@ -49,11 +47,11 @@ object MemberPoints {
     }
 
     /**
-     * A Member-Points representing a piece of content.
+     * An AvailableTask representing a piece of content.
      */
-    data class MemberPointsItem(val id: String, val name: String, val weeklyPoints: String) {
+    data class AvailableTaskItem(val id: String, val task: String, val coins: String) {
         override fun toString(): String {
-            return name + Resources.getSystem().getString(R.string.member_points_qty) + weeklyPoints + Resources.getSystem().getString(R.string.points)
+            return task + Resources.getSystem().getString(R.string.costs) + coins
         }
     }
 

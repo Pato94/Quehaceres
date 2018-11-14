@@ -31,5 +31,6 @@
     <string name="action_change_member">CAMBIAR</string>
     <string name="member_points_qty">Tiene asignados</string>
     <string name="points">puntos</string>
+    <string name="costs">Cuesta $</string>
 
 </resources>
