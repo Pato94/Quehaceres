@@ -2,6 +2,8 @@ package dadm.frba.utn.edu.ar.quehaceres.activities
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -47,7 +49,10 @@ class LoginActivity : AppCompatActivity() {
           .subscribe(
                   {
                       showProgress(false)
-                      goToMainActivity()
+                      val intent = Intent(this, MainActivity::class.java)
+                      intent.putExtra("id", it.id)
+                      startActivity(intent)
+
                   },
                   {
                       showProgress(false)
@@ -69,9 +74,10 @@ class LoginActivity : AppCompatActivity() {
 //                )
     }
 
-    private fun goToMainActivity() {
-        startActivity(MainActivity.newIntent(this))
-    }
+//    private fun goToMainActivity(val id: Int) {
+ //       MainActivity.newIntent(this).putExtra("id", id)
+ //       startActivity(MainActivity.newIntent(this))
+//    }
 
     /**
      * Shows the progress UI and hides the login form.

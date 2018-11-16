@@ -43,7 +43,7 @@ class Api {
 
   data class LoginRequest(val username: String, val password: String)
 
-  data class LoginResponse(val id: String, val username: String, val password: String, val fullName: String)
+  data class LoginResponse(val id: Int, val username: String, val password: String, val fullName: String)
 
   @Parcelize
   data class Group(val id: Int, val name: String, val members: List<Int>, val tasks: List<Task>): Parcelable

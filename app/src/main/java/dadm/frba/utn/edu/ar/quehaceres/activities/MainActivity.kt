@@ -34,11 +34,17 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     val groupsService: GroupsService by lazy { GroupsService() }
     val api by lazy { Api().api }
+
     val adapter: GroupsAdapter by lazy {
         GroupsAdapter {
             startActivity(GroupActivity.newIntent(it, this@MainActivity))
         }
     }
+
+
+
+ //   val idUsuario: Int = id!!
+ //   val idUsuarioInt: Int = idUsuario.toInt()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,8 +72,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
 
+
+        val bundle: Bundle? = intent.extras
+        val id = bundle!!.getInt("id")
 //        groupsService.getGroups()
-            api.myGroups(1)
+            api.myGroups(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe { showLoading(true) }
