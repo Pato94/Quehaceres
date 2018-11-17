@@ -12,19 +12,20 @@ import android.view.ViewGroup
 import android.widget.EditText
 import dadm.frba.utn.edu.ar.quehaceres.R
 
-import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent.DummyItem
+import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.Member
+import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.MemberPoints
 
 class SelectMemberPointsFragment : Fragment() {
 
   private var listener: OnListFragmentInteractionListener? = null
-  private lateinit var selectedMembers: List<DummyItem>
+  private lateinit var selectedMembers: List<MemberPoints.MemberPointsItem>
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
     arguments?.let {
       @Suppress("UNCHECKED_CAST")
-      selectedMembers = it.getSerializable(ARG_SELECTED_MEMBERS) as ArrayList<DummyItem>
+      selectedMembers = it.getSerializable(ARG_SELECTED_MEMBERS) as ArrayList<MemberPoints.MemberPointsItem>
     }
 
     setHasOptionsMenu(true)
@@ -73,7 +74,7 @@ class SelectMemberPointsFragment : Fragment() {
   }
 
   interface OnListFragmentInteractionListener {
-    fun onPointsSelected(selected: List<DummyItem>)
+    fun onPointsSelected(selected: List<MemberPoints.MemberPointsItem>)
   }
 
   companion object {
@@ -82,10 +83,11 @@ class SelectMemberPointsFragment : Fragment() {
 
     // TODO: Customize parameter initialization
     @JvmStatic
-    fun newInstance(selectedMembers: List<DummyItem>) =
+    fun newInstance(selectedMembers: List<Member.MemberItem>) =
         SelectMemberPointsFragment().apply {
           arguments = Bundle().apply {
-            putSerializable(ARG_SELECTED_MEMBERS, ArrayList(selectedMembers))
+            val memberPoints = selectedMembers.map { MemberPoints.MemberPointsItem(it.id, it.name, "100") }
+            putSerializable(ARG_SELECTED_MEMBERS, ArrayList(memberPoints))
           }
         }
   }

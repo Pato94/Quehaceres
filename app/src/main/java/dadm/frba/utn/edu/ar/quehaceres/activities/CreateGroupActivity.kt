@@ -7,7 +7,8 @@ import android.os.Bundle
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.fragments.SelectMemberPointsFragment
 import dadm.frba.utn.edu.ar.quehaceres.fragments.SelectMembersFragment
-import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent
+import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.Member
+import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.MemberPoints
 
 class CreateGroupActivity : AppCompatActivity(), SelectMembersFragment.OnListFragmentInteractionListener, SelectMemberPointsFragment.OnListFragmentInteractionListener {
 
@@ -21,10 +22,10 @@ class CreateGroupActivity : AppCompatActivity(), SelectMembersFragment.OnListFra
     }
   }
 
-  override fun onPointsSelected(selected: List<DummyContent.DummyItem>) {
+  override fun onPointsSelected(selected: List<MemberPoints.MemberPointsItem>) {
   }
 
-  override fun onMembersSelected(selected: List<DummyContent.DummyItem>) {
+  override fun onMembersSelected(selected: List<Member.MemberItem>) {
     supportFragmentManager.beginTransaction()
         .replace(R.id.container, SelectMemberPointsFragment.newInstance(selected))
         .commitNow()

@@ -13,6 +13,7 @@ import dadm.frba.utn.edu.ar.quehaceres.R
 
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent.DummyItem
+import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.Notification
 
 /**
  * A fragment representing a list of Items.
@@ -45,7 +46,7 @@ class NotificationsFragment : Fragment() {
                     columnCount <= 1 -> LinearLayoutManager(context)
                     else -> GridLayoutManager(context, columnCount)
                 }
-                adapter = MyNotificationRecyclerViewAdapter(DummyContent.ITEMS, listener)
+                adapter = MyNotificationRecyclerViewAdapter(Notification.ITEMS, listener)
             }
         }
         return view
@@ -78,7 +79,7 @@ class NotificationsFragment : Fragment() {
      */
     interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        fun onListFragmentInteraction(item: DummyItem?)
+        fun onListFragmentInteraction(item: Notification.NotificationItem?)
     }
 
     companion object {

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import dadm.frba.utn.edu.ar.quehaceres.R
+import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.AvailableTask
 
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent.DummyItem
@@ -41,7 +42,7 @@ class AvailableTasksFragment : Fragment() {
     if (view is RecyclerView) {
       with(view) {
         layoutManager = LinearLayoutManager(context)
-        adapter = AvailableTasksAdapter(DummyContent.ITEMS, listener)
+        adapter = AvailableTasksAdapter(AvailableTask.ITEMS, listener)
       }
     }
     return view
@@ -74,7 +75,7 @@ class AvailableTasksFragment : Fragment() {
    */
   interface Listener {
     // TODO: Update argument type and name
-    fun onAvailableTaskClicked(item: DummyItem?)
+    fun onAvailableTaskClicked(item: AvailableTask.AvailableTaskItem?)
   }
 
   companion object {
