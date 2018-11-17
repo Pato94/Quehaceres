@@ -86,7 +86,8 @@ class SelectMemberPointsFragment : Fragment() {
     fun newInstance(selectedMembers: List<Member.MemberItem>) =
         SelectMemberPointsFragment().apply {
           arguments = Bundle().apply {
-            putSerializable(ARG_SELECTED_MEMBERS, ArrayList(selectedMembers))
+            val memberPoints = selectedMembers.map { MemberPoints.MemberPointsItem(it.id, it.name, "100") }
+            putSerializable(ARG_SELECTED_MEMBERS, ArrayList(memberPoints))
           }
         }
   }
