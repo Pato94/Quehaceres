@@ -1,6 +1,9 @@
 package dadm.frba.utn.edu.ar.quehaceres.api
 
 import android.os.Parcelable
+import com.google.gson.FieldNamingPolicy
+import com.google.gson.GsonBuilder
+import dadm.frba.utn.edu.ar.quehaceres.models.User
 import io.reactivex.Observable
 import kotlinx.android.parcel.Parcelize
 import retrofit2.Retrofit
@@ -15,39 +18,46 @@ import retrofit2.http.Header
 
 
 class Api {
-  lateinit var retrofit: Retrofit
-  lateinit var api: Api
+    var api: Api
 
-  init {
-    val interceptor = HttpLoggingInterceptor()
-    interceptor.level = HttpLoggingInterceptor.Level.BODY
-    val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+    init {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+        val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
+        val gson = GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .create()
 
-    val retrofit = Retrofit.Builder()
-        .baseUrl("https://que-haceres-api.herokuapp.com/")
-        .client(client)
-        .addConverterFactory(GsonConverterFactory.create())
-        .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-        .build()
+        val retrofit = Retrofit.Builder()
+                .baseUrl("https://que-haceres-api.herokuapp.com/")
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .build()
 
-    api = retrofit.create(Api::class.java)
-  }
+        api = retrofit.create(Api::class.java)
+    }
 
-  interface Api {
-    @POST("login")
-    fun login(@Body body: LoginRequest): Observable<LoginResponse>
+    fun login(username: String, password: String): Observable<User> =
+            api.login(LoginRequest(username, password)).map { User(it.id, it.username, it.fullName) }
 
-    @GET("mygroups")
-    fun myGroups(@Header("X-UserId") userId: Int): Observable<List<Group>>
-  }
+    fun myGroups(userId: Int): Observable<List<Group>> = api.myGroups(userId)
 
-  data class LoginRequest(val username: String, val password: String)
+    interface Api {
+        @POST("login")
+        fun login(@Body body: LoginRequest): Observable<LoginResponse>
 
-  data class LoginResponse(val id: Int, val username: String, val password: String, val fullName: String)
+        @GET("mygroups")
+        fun myGroups(@Header("X-UserId") userId: Int): Observable<List<Group>>
+    }
 
-  @Parcelize
-  data class Group(val id: Int, val name: String, val members: List<Int>, val tasks: List<Task>): Parcelable
+    data class LoginRequest(val username: String, val password: String)
 
-  @Parcelize
-  data class Task(val member: Int, val assigned: List<Int>): Parcelable
+    data class LoginResponse(val id: Int, val username: String, val password: String, val fullName: String)
+
+    @Parcelize
+    data class Group(val id: Int, val name: String, val members: List<Int>, val tasks: List<Task>) : Parcelable
+
+    @Parcelize
+    data class Task(val member: Int, val assigned: List<Int>) : Parcelable
 }

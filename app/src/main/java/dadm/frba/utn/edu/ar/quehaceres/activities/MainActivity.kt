@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import android.support.v7.widget.DividerItemDecoration
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
+import dadm.frba.utn.edu.ar.quehaceres.services.Services
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
@@ -32,19 +33,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    val groupsService: GroupsService by lazy { GroupsService() }
-    val api by lazy { Api().api }
+    private val services by lazy { Services(this) }
 
     val adapter: GroupsAdapter by lazy {
         GroupsAdapter {
             startActivity(GroupActivity.newIntent(it, this@MainActivity))
         }
     }
-
-
-
- //   val idUsuario: Int = id!!
- //   val idUsuarioInt: Int = idUsuario.toInt()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,24 +67,18 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onResume() {
         super.onResume()
 
-
-        val bundle: Bundle? = intent.extras
-        val id = bundle!!.getInt("id")
-//        groupsService.getGroups()
-            api.myGroups(id)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { showLoading(true) }
-                .subscribe(
-                        {
-                            showLoading(false)
-                            adapter.groups = it
-                            adapter.notifyDataSetChanged()
-                        },
-                        {
-                            showLoading(false)
-                            Toast.makeText(this, "Hubo un error al cargar los grupos", Toast.LENGTH_SHORT).show()
-                        }
+        services.myGroups()
+            .doOnSubscribe { showLoading(true) }
+            .subscribe(
+                    {
+                        showLoading(false)
+                        adapter.groups = it
+                        adapter.notifyDataSetChanged()
+                    },
+                    {
+                        showLoading(false)
+                        Toast.makeText(this, "Hubo un error al cargar los grupos", Toast.LENGTH_SHORT).show()
+                    }
                 )
     }
 

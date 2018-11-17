@@ -20,7 +20,7 @@ class StorageService(val context: Context) {
         putObject(LOGGED_USER, user)
     }
 
-    fun getUser(user: User): User? {
+    fun getUser(): User? {
         return getObject(LOGGED_USER, User::class.java)
     }
 
