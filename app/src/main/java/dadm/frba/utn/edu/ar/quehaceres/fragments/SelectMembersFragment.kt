@@ -97,10 +97,10 @@ class SelectMembersFragment : Fragment() {
 
   companion object {
 
-    // TODO: Customize parameter argument names
+    // COMPLETED: Customize parameter argument names
     const val ARG_COLUMN_COUNT = "column-count"
 
-    // TODO: Customize parameter initialization
+    // COMPLETED: Customize parameter initialization
     @JvmStatic
     fun newInstance(columnCount: Int) =
         SelectMembersFragment().apply {

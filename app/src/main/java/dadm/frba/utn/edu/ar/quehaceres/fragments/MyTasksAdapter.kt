@@ -14,7 +14,7 @@ import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.AvailableTask
 import kotlinx.android.synthetic.main.fragment_availabletasks.view.*
 
 /**
- * [RecyclerView.Adapter] that can display a [DummyItem] and makes a call to the
+ * [RecyclerView.Adapter] that can display an [AvailableTaskItem] and makes a call to the
  * specified [Listener].
  * TODO: Replace the implementation with code for your data type.
  */
