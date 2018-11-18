@@ -55,7 +55,7 @@ class MemberPointsRecyclerViewAdapter(
 
   inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
 //    val mIdView: TextView = mView.item_number
-    val mMemberNameView: TextView = mView.findViewById(R.id.tv_member_name)
+    val mMemberNameView: TextView = mView.findViewById(R.id.full_name)
     val mPointsView: TextView = mView.findViewById(R.id.tv_member_points)
 
     override fun toString(): String {

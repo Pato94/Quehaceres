@@ -8,14 +8,16 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.squareup.picasso.Picasso
 import dadm.frba.utn.edu.ar.quehaceres.R
+
 import dadm.frba.utn.edu.ar.quehaceres.models.User
 
-import kotlinx.android.synthetic.main.list_item_selected_member.view.*
+import kotlinx.android.synthetic.main.list_item_member.view.*
 
-class SelectedMembersAdapter(
+class AllMembersAdapter(
         private val mValues: List<User>,
+        private val mSelectedValues: List<User>,
         private val mListener: (User) -> Unit)
-    : RecyclerView.Adapter<SelectedMembersAdapter.ViewHolder>() {
+    : RecyclerView.Adapter<AllMembersAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener
 
@@ -28,7 +30,7 @@ class SelectedMembersAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-                .inflate(R.layout.list_item_selected_member, parent, false)
+                .inflate(R.layout.list_item_member, parent, false)
         return ViewHolder(view)
     }
 
@@ -36,7 +38,14 @@ class SelectedMembersAdapter(
         val item = mValues[position]
 
         Picasso.get().load(item.avatar).into(holder.avatar)
+        holder.username.text = item.email
         holder.fullName.text = item.fullName
+
+        if (mSelectedValues.contains(item)) {
+            holder.added.visibility = View.VISIBLE
+        } else {
+            holder.added.visibility = View.GONE
+        }
 
         with(holder.mView) {
             tag = item
@@ -48,6 +57,8 @@ class SelectedMembersAdapter(
 
     class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val avatar: ImageView = mView.avatar
+        val username: TextView = mView.username
         val fullName: TextView = mView.full_name
+        val added: ImageView = mView.added
     }
 }

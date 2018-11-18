@@ -13,24 +13,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:clipToPadding="false"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         tools:context=".fragments.SelectMembersFragment"
-        tools:listitem="@layout/selected_fragment_members" />
+        tools:listitem="@layout/list_item_selected_member" />
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/selected_list"
+        android:background="@color/gray"
+        />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
         android:name="dadm.frba.utn.edu.ar.quehaceres.fragments.SelectMembersFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/selected_list"
+        android:layout_below="@id/separator"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         tools:context=".fragments.SelectMembersFragment"
-        tools:listitem="@layout/fragment_members" />
+        tools:listitem="@layout/list_item_member" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/next"

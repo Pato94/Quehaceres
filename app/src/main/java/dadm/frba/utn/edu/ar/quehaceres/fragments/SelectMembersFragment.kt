@@ -41,27 +41,49 @@ class SelectMembersFragment : Fragment() {
         super.onResume()
 
         services.allUsers()
-                .subscribe({
-                    setUpRecyclerViews(it)
-                }, {
+                .subscribe(::setUpViews) {
                     it.printStackTrace()
-                })
+                }
     }
 
-    private fun setUpRecyclerViews(allUsers: List<User>) {
-        val updateSelectedMembers = { selected_list.adapter?.notifyDataSetChanged() }
-
-        selected_list.adapter = SelectedMembersAdapter(selectedMembers) { member ->
-            selectedMembers.remove(member)
-            updateSelectedMembers()
+    private fun setUpViews(allUsers: List<User>) {
+        list.adapter = AllMembersAdapter(allUsers, selectedMembers) { member ->
+            addOrRemove(member)
+            onSelectedMembersUpdated()
         }
 
-        list.adapter = AddMembersAdapter(allUsers) { member ->
-            selectedMembers.add(member)
-            updateSelectedMembers()
+        selected_list.adapter = SelectedMembersAdapter(selectedMembers) { member ->
+            addOrRemove(member)
+            onSelectedMembersUpdated()
         }
 
         next.setOnClickListener { listener?.onMembersSelected(selectedMembers) }
+
+        updateTopRecyclerViewVisibility()
+    }
+
+    private fun onSelectedMembersUpdated() {
+        selected_list.adapter?.notifyDataSetChanged()
+        list.adapter?.notifyDataSetChanged()
+        updateTopRecyclerViewVisibility()
+    }
+
+    private fun updateTopRecyclerViewVisibility() {
+        if (selectedMembers.isEmpty()) {
+            separator.visibility = View.GONE
+            selected_list.visibility = View.GONE
+        } else {
+            separator.visibility = View.VISIBLE
+            selected_list.visibility = View.VISIBLE
+        }
+    }
+
+    private fun addOrRemove(member: User) {
+        if (selectedMembers.contains(member)) {
+            selectedMembers.remove(member)
+        } else {
+            selectedMembers.add(member)
+        }
     }
 
     override fun onAttach(context: Context) {
