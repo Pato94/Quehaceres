@@ -24,24 +24,14 @@ object Member {
         }
     }
 
-
     private fun addItem(item: MemberItem) {
         ITEMS.add(item)
         ITEM_MAP.put(item.id, item)
     }
 
-    //TODO: Replace dummy with actual Member creation
-    private fun createMemberItem(position: Int): MemberItem {
-        return MemberItem(position.toString(), "Item " + position)
-    }
-
-    private fun makeDetails(position: Int): String {
-        val builder = StringBuilder()
-        builder.append("Details about Item: ").append(position)
-        for (i in 0..position - 1) {
-            builder.append("\nMore details information here.")
-        }
-        return builder.toString()
+    //TODO: Replace or remove id
+    private fun createMemberItem(position: Int, name: String): MemberItem {
+        return MemberItem(position.toString(), name)
     }
 
     /**
