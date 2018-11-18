@@ -3,6 +3,7 @@ package dadm.frba.utn.edu.ar.quehaceres.services
 import android.content.Context
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.api.Api.Group
+import dadm.frba.utn.edu.ar.quehaceres.models.User
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -22,6 +23,13 @@ class Services(private val storageService: StorageService, private val api: Api 
 
     fun myGroups(): Observable<List<Group>> {
         return api.myGroups(currentId())
+                .doOnError { it.printStackTrace() }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    fun allUsers(): Observable<List<User>> {
+        return api.users()
                 .doOnError { it.printStackTrace() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

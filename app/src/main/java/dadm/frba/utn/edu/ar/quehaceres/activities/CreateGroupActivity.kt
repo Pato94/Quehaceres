@@ -9,6 +9,7 @@ import dadm.frba.utn.edu.ar.quehaceres.fragments.SelectMemberPointsFragment
 import dadm.frba.utn.edu.ar.quehaceres.fragments.SelectMembersFragment
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.Member
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.MemberPoints
+import dadm.frba.utn.edu.ar.quehaceres.models.User
 
 class CreateGroupActivity : AppCompatActivity(), SelectMembersFragment.OnListFragmentInteractionListener, SelectMemberPointsFragment.OnListFragmentInteractionListener {
 
@@ -17,7 +18,7 @@ class CreateGroupActivity : AppCompatActivity(), SelectMembersFragment.OnListFra
     setContentView(R.layout.create_group_activity)
     if (savedInstanceState == null) {
       supportFragmentManager.beginTransaction()
-          .replace(R.id.container, SelectMembersFragment.newInstance(1))
+          .replace(R.id.container, SelectMembersFragment.newInstance())
           .commitNow()
     }
   }
@@ -25,9 +26,9 @@ class CreateGroupActivity : AppCompatActivity(), SelectMembersFragment.OnListFra
   override fun onPointsSelected(selected: List<MemberPoints.MemberPointsItem>) {
   }
 
-  override fun onMembersSelected(selected: List<Member.MemberItem>) {
+  override fun onMembersSelected(selected: List<User>) {
     supportFragmentManager.beginTransaction()
-        .replace(R.id.container, SelectMemberPointsFragment.newInstance(selected))
+        .replace(R.id.container, SelectMemberPointsFragment.newInstance(Member.ITEMS))
         .commitNow()
   }
 

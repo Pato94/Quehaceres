@@ -39,9 +39,11 @@ class Api {
     }
 
     fun login(username: String, password: String): Observable<User> =
-            api.login(LoginRequest(username, password)).map { User(it.id, it.username, it.fullName) }
+            api.login(LoginRequest(username, password)).map { User(it) }
 
     fun myGroups(userId: Int): Observable<List<Group>> = api.myGroups(userId)
+
+    fun users(): Observable<List<User>> = api.users().map { remoteUsers -> remoteUsers.map { User(it) } }
 
     interface Api {
         @POST("login")
@@ -49,6 +51,9 @@ class Api {
 
         @GET("mygroups")
         fun myGroups(@Header("X-UserId") userId: Int): Observable<List<Group>>
+
+        @GET("users")
+        fun users(): Observable<List<LoginResponse>>
     }
 
     data class LoginRequest(val username: String, val password: String)
