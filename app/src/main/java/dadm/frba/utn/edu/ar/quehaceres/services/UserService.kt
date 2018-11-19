@@ -22,7 +22,7 @@ class UserService(private val storageService: StorageService, private val apiSer
 
         return apiService.loginUser(email, password)
                 .doOnNext {
-                    storageService.storeUser(User(email))
+                    storageService.storeUser(User(email,1,0))
                     storageService.storeUserToken(it.token)
                 }
                 .doOnError { it.printStackTrace() }
