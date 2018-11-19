@@ -11,7 +11,7 @@ import android.widget.Toast
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.services.Services
-import kotlinx.android.synthetic.main.fragment_availabletasks_list.*
+import kotlinx.android.synthetic.main.fragment_tasks_list.*
 import java.lang.IllegalStateException
 
 class AvailableTasksFragment : Fragment() {
@@ -19,7 +19,6 @@ class AvailableTasksFragment : Fragment() {
     private val services by lazy { Services(context!!) }
     private var listener: Listener? = null
     private var groupId: Int? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +34,7 @@ class AvailableTasksFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_availabletasks_list, container, false)
+        return inflater.inflate(R.layout.fragment_tasks_list, container, false)
     }
 
     @SuppressLint("CheckResult")

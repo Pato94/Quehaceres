@@ -5,73 +5,46 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.os.Bundle
+import android.provider.MediaStore
 import android.support.design.widget.TabLayout
-import android.support.v7.app.AppCompatActivity
-
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import android.os.Bundle
-import android.provider.MediaStore
-import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
+import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.Toast
-
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.fragments.AvailableTasksFragment
 import dadm.frba.utn.edu.ar.quehaceres.fragments.MyTasksFragment
-import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.AvailableTask
 import kotlinx.android.synthetic.main.activity_group.*
+import java.lang.IllegalStateException
 
 class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTasksFragment.Listener {
 
-    override fun onMyTaskClicked(item: AvailableTask.AvailableTaskItem?) {
-        item?.let {
-            AlertDialog.Builder(this)
-                    .setTitle(it.id)
-                    .setMessage(it.task)
-                    .setPositiveButton("Verificar") { _, _ -> onVerifyClicked() }
-                    .setNegativeButton("Cancelar") { d, _ -> d.dismiss() }
-                    .show()
-        }
-    }
-
-    override fun onAvailableTaskClicked(item: Api.Task) {
-        AlertDialog.Builder(this)
-                .setTitle(item.name)
-                .setMessage("Querés asignarte esta tarea?")
-                .setPositiveButton("Asignar") { _, _ -> Toast.makeText(this, "Asignar clicked", Toast.LENGTH_SHORT).show() }
-                .setNegativeButton("Cancelar") { d, _ -> d.dismiss() }
-                .show()
-    }
-
-    companion object {
-        const val CAMERA_PERMISSION_REQUEST = 1001
-        const val CAPTURE_IMAGE_REQUEST = 1002
-
-        fun newIntent(group: Api.Group, context: Context): Intent {
-            val intent = Intent(context, GroupActivity::class.java)
-            intent.putExtra("GROUP", group)
-            return intent
-        }
-    }
+    var group: Api.Group? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_group)
+        group = intent.getParcelableExtra("GROUP")
 
+        if (group == null) {
+            throw IllegalStateException("Group cannot be null")
+        }
+
+        setContentView(R.layout.activity_group)
         setUpViews()
     }
 
     private fun setUpViews() {
-        val group = intent.getParcelableExtra<Api.Group>("GROUP")
         setSupportActionBar(toolbar)
-        supportActionBar?.title = group.name
+        supportActionBar?.title = group!!.name
 
         setUpAdapter()
     }
@@ -142,15 +115,11 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
         menuInflater.inflate(R.menu.menu_group, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         val id = item.itemId
 
         if (id == R.id.action_notifications) {
@@ -162,12 +131,41 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
         return super.onOptionsItemSelected(item)
     }
 
+    override fun onMyTaskClicked(item: Api.Task) {
+        AlertDialog.Builder(this)
+                .setTitle(item.name)
+                .setMessage("Querés verificar esta tarea?")
+                .setPositiveButton("Verificar") { _, _ -> onVerifyClicked() }
+                .setNegativeButton("Cancelar") { d, _ -> d.dismiss() }
+                .show()
+    }
+
+    override fun onAvailableTaskClicked(item: Api.Task) {
+        AlertDialog.Builder(this)
+                .setTitle(item.name)
+                .setMessage("Querés asignarte esta tarea?")
+                .setPositiveButton("Asignar") { _, _ -> Toast.makeText(this, "Asignar clicked", Toast.LENGTH_SHORT).show() }
+                .setNegativeButton("Cancelar") { d, _ -> d.dismiss() }
+                .show()
+    }
+
+    companion object {
+        const val CAMERA_PERMISSION_REQUEST = 1001
+        const val CAPTURE_IMAGE_REQUEST = 1002
+
+        fun newIntent(group: Api.Group, context: Context): Intent {
+            val intent = Intent(context, GroupActivity::class.java)
+            intent.putExtra("GROUP", group)
+            return intent
+        }
+    }
+
     inner class SectionsPagerAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
 
         override fun getItem(position: Int): Fragment {
             return when (position) {
-                0 -> AvailableTasksFragment.newInstance(1) // TODO
-                else -> MyTasksFragment.newInstance(1)
+                0 -> AvailableTasksFragment.newInstance(group!!.id)
+                else -> MyTasksFragment.newInstance(group!!.id)
             }
         }
 

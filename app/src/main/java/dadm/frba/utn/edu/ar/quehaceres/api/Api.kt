@@ -47,6 +47,8 @@ class Api {
 
     fun availableTasks(userId: Int, groupId: Int): Observable<List<Task>> = api.availableTasks(userId, groupId)
 
+    fun myTasks(userId: Int, groupId: Int): Observable<List<Task>> = api.myTasks(userId, groupId)
+
     interface Api {
         @POST("login")
         fun login(@Body body: LoginRequest): Observable<LoginResponse>
@@ -62,6 +64,9 @@ class Api {
 
         @GET("groups/{group_id}/available_tasks")
         fun availableTasks(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<List<Task>>
+
+        @GET("groups/{group_id}/my_tasks")
+        fun myTasks(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<List<Task>>
     }
 
     data class LoginRequest(val username: String, val password: String)
