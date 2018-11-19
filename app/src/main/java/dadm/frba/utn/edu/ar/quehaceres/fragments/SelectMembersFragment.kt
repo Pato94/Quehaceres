@@ -20,7 +20,6 @@ class SelectMembersFragment : Fragment() {
     private val services by lazy { Services(context!!) }
     private val selectedMembers = LinkedList<User>()
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)

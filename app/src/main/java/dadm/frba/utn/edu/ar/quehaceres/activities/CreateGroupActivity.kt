@@ -28,7 +28,7 @@ class CreateGroupActivity : AppCompatActivity(), SelectMembersFragment.OnListFra
 
   override fun onMembersSelected(selected: List<User>) {
     supportFragmentManager.beginTransaction()
-        .replace(R.id.container, SelectMemberPointsFragment.newInstance(Member.ITEMS))
+        .replace(R.id.container, SelectMemberPointsFragment.newInstance(selected))
         .commitNow()
   }
 
