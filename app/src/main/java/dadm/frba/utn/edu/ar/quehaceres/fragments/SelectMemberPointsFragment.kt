@@ -3,7 +3,6 @@ package dadm.frba.utn.edu.ar.quehaceres.fragments
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
@@ -39,17 +38,7 @@ class SelectMemberPointsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         list.adapter = MemberPointsRecyclerViewAdapter(selectedMembers) { user ->
-            val seekBar = createSeekBar(getCurrentPoints(user))
-
-            val dialog = AlertDialog.Builder(context!!)
-                    .setTitle("Cantidad de puntos semanales")
-                    .setView(seekBar)
-                    .setPositiveButton("Confirmar") { dialog, which ->
-                        setNewPointsForUser(user, seekBar.progress)
-                    }
-                    .setNegativeButton("Cancelar") { dialog, which -> }
-                    .create()
-
+            val dialog = SelectWeeklyPointsDialog(context!!, getCurrentPoints(user)) { setNewPointsForUser(user, it) }
             dialog.show()
         }
 
@@ -67,14 +56,6 @@ class SelectMemberPointsFragment : Fragment() {
     private fun setNewPointsForUser(user: User, newPoints: Int) {
         selectedMembers[selectedMembers.indexOfFirst { it.first == user }] = Pair(user, newPoints)
         list.adapter?.notifyDataSetChanged()
-    }
-
-    private fun createSeekBar(currentPoints: Int): SeekBar {
-        val seekBar = SeekBar(context!!)
-        seekBar.max = 500
-        seekBar.progress = currentPoints
-
-        return seekBar
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?) {
