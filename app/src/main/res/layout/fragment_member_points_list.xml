@@ -11,20 +11,26 @@
         android:id="@+id/group_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="12dp"
+        android:layout_margin="@dimen/text_margin"
         android:hint="Elige un nombre para el grupo" />
+
+    <View
+        android:id="@+id/separator"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/group_name"
+        android:background="@color/gray"
+        />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
         android:name="dadm.frba.utn.edu.ar.quehaceres.fragments.SelectMembersFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/group_name"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_below="@id/separator"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         tools:context=".fragments.SelectMembersFragment"
-        tools:listitem="@layout/fragment_member_points" />
+        tools:listitem="@layout/list_item_member_points" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/next"

@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.MemberPoints
 import dadm.frba.utn.edu.ar.quehaceres.models.User
@@ -37,7 +36,7 @@ class SelectMemberPointsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        list.adapter = MemberPointsRecyclerViewAdapter(selectedMembers) { user ->
+        list.adapter = SelectMemberPointsAdapter(selectedMembers) { user ->
             val dialog = SelectWeeklyPointsDialog(context!!, getCurrentPoints(user)) { setNewPointsForUser(user, it) }
             dialog.show()
         }
