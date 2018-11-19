@@ -9,13 +9,10 @@ import kotlinx.android.parcel.Parcelize
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
-import retrofit2.http.POST
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.http.GET
-import retrofit2.http.Header
+import retrofit2.http.*
 
 class Api {
     var api: Api
@@ -48,6 +45,8 @@ class Api {
     fun createGroup(currentId: Int, name: String, usersAndPoints: List<Pair<User, Int>>) =
             api.createGroup(currentId, CreateGroupRequest(name, usersAndPoints.map { UserAndPoints(it.first.id, it.second) }))
 
+    fun availableTasks(userId: Int, groupId: Int): Observable<List<Task>> = api.availableTasks(userId, groupId)
+
     interface Api {
         @POST("login")
         fun login(@Body body: LoginRequest): Observable<LoginResponse>
@@ -60,6 +59,9 @@ class Api {
 
         @POST("groups")
         fun createGroup(@Header("X-UserId") userId: Int, @Body createGroupRequest: CreateGroupRequest): Observable<ResponseBody>
+
+        @GET("groups/{group_id}/available_tasks")
+        fun availableTasks(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<List<Task>>
     }
 
     data class LoginRequest(val username: String, val password: String)
@@ -72,8 +74,11 @@ class Api {
     data class UserAndPoints(val id: Int, val points: Int): Parcelable
 
     @Parcelize
-    data class Group(val id: Int, val name: String, val members: List<UserAndPoints>, val tasks: List<Task>?) : Parcelable
+    data class Group(val id: Int, val name: String, val members: List<UserAndPoints>, val tasks: List<MemberTasks>?) : Parcelable
 
     @Parcelize
-    data class Task(val member: Int, val assigned: List<Int>) : Parcelable
+    data class MemberTasks(val member: Int, val assigned: List<Int>) : Parcelable
+
+    @Parcelize
+    data class Task(val id: Int, val name: String): Parcelable
 }
