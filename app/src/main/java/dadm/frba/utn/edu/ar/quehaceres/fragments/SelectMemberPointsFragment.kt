@@ -1,5 +1,6 @@
 package dadm.frba.utn.edu.ar.quehaceres.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -7,15 +8,18 @@ import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.MemberPoints
 import dadm.frba.utn.edu.ar.quehaceres.models.User
+import dadm.frba.utn.edu.ar.quehaceres.services.Services
 import kotlinx.android.synthetic.main.fragment_member_points_list.*
 
 class SelectMemberPointsFragment : Fragment() {
 
     private var listener: OnListFragmentInteractionListener? = null
     private lateinit var selectedMembers: ArrayList<Pair<User, Int>>
+    private val services by lazy { Services(context!!) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,9 +49,18 @@ class SelectMemberPointsFragment : Fragment() {
             if (group_name.text.toString().isEmpty()) {
                 group_name.error = "Elige un nombre para el grupo"
             } else {
-                activity?.finish()
+                createGroup()
             }
         }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun createGroup() {
+        services.createGroup(group_name.text.toString(), selectedMembers)
+                .subscribe(
+                        { activity?.finish() },
+                        { Toast.makeText(context!!, "Hubo un error al crear el grupo", Toast.LENGTH_SHORT).show() }
+                )
     }
 
     private fun getCurrentPoints(user: User) = selectedMembers.first { it.first == user }.second

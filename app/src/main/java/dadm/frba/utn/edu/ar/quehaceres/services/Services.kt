@@ -29,10 +29,18 @@ class Services(private val storageService: StorageService, private val api: Api 
     }
 
     fun allUsers(): Observable<List<User>> {
-        return api.users()
+        return api.users(currentId())
                 .doOnError { it.printStackTrace() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    fun createGroup(name: String, membersAndPoints: List<Pair<User, Int>>): Observable<Any> {
+        return api.createGroup(currentId(), name, membersAndPoints)
+                .doOnError { it.printStackTrace() }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map { Any() }
     }
 
     private fun currentId(): Int {

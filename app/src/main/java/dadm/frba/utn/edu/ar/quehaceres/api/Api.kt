@@ -12,10 +12,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.POST
 import okhttp3.OkHttpClient
+import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.http.GET
 import retrofit2.http.Header
-
 
 class Api {
     var api: Api
@@ -43,7 +43,10 @@ class Api {
 
     fun myGroups(userId: Int): Observable<List<Group>> = api.myGroups(userId)
 
-    fun users(): Observable<List<User>> = api.users().map { remoteUsers -> remoteUsers.map { User(it) } }
+    fun users(userId: Int): Observable<List<User>> = api.users(userId).map { remoteUsers -> remoteUsers.map { User(it) } }
+
+    fun createGroup(currentId: Int, name: String, usersAndPoints: List<Pair<User, Int>>) =
+            api.createGroup(currentId, CreateGroupRequest(name, usersAndPoints.map { UserAndPoints(it.first.id, it.second) }))
 
     interface Api {
         @POST("login")
@@ -53,15 +56,23 @@ class Api {
         fun myGroups(@Header("X-UserId") userId: Int): Observable<List<Group>>
 
         @GET("users")
-        fun users(): Observable<List<LoginResponse>>
+        fun users(@Header("X-UserId") userId: Int): Observable<List<LoginResponse>>
+
+        @POST("groups")
+        fun createGroup(@Header("X-UserId") userId: Int, @Body createGroupRequest: CreateGroupRequest): Observable<ResponseBody>
     }
 
     data class LoginRequest(val username: String, val password: String)
 
     data class LoginResponse(val id: Int, val username: String, val password: String, val fullName: String)
 
+    data class CreateGroupRequest(val name: String, val members: List<UserAndPoints>)
+
     @Parcelize
-    data class Group(val id: Int, val name: String, val members: List<Int>, val tasks: List<Task>) : Parcelable
+    data class UserAndPoints(val id: Int, val points: Int): Parcelable
+
+    @Parcelize
+    data class Group(val id: Int, val name: String, val members: List<UserAndPoints>, val tasks: List<Task>?) : Parcelable
 
     @Parcelize
     data class Task(val member: Int, val assigned: List<Int>) : Parcelable
