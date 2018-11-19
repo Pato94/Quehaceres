@@ -19,6 +19,7 @@ class SelectMembersFragment : Fragment() {
     private var listener: OnListFragmentInteractionListener? = null
     private val services by lazy { Services(context!!) }
     private val selectedMembers = LinkedList<User>()
+    private var allUsers: List<User>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,11 +39,15 @@ class SelectMembersFragment : Fragment() {
     @SuppressLint("CheckResult")
     override fun onResume() {
         super.onResume()
-
-        services.allUsers()
-                .subscribe(::setUpViews) {
-                    it.printStackTrace()
-                }
+        if (allUsers == null) {
+            services.allUsers()
+                    .doOnNext { allUsers = it }
+                    .subscribe(::setUpViews) {
+                        it.printStackTrace()
+                    }
+        } else {
+            setUpViews(allUsers!!)
+        }
     }
 
     private fun setUpViews(allUsers: List<User>) {
