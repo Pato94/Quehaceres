@@ -8,16 +8,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import dadm.frba.utn.edu.ar.quehaceres.OnTaskAssigned
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.services.Services
 import kotlinx.android.synthetic.main.fragment_tasks_list.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 
 class MyTasksFragment : Fragment() {
 
     private val services by lazy { Services(context!!) }
     private var listener: MyTasksFragment.Listener? = null
     private var groupId: Int? = null
+    private var eventBus: EventBus = EventBus.getDefault()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,9 +36,13 @@ class MyTasksFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_tasks_list, container, false)
     }
 
-    @SuppressLint("CheckResult")
     override fun onResume() {
         super.onResume()
+        loadMyTasks()
+    }
+
+    @SuppressLint("CheckResult")
+    private fun loadMyTasks() {
         services.myTasks(groupId!!)
                 .doOnSubscribe {
                     loading.visibility = View.VISIBLE
@@ -54,6 +62,11 @@ class MyTasksFragment : Fragment() {
                 )
     }
 
+    @Subscribe
+    fun onTaskAssigned(event: OnTaskAssigned) {
+        loadMyTasks()
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is MyTasksFragment.Listener) {
@@ -66,6 +79,16 @@ class MyTasksFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         listener = null
+    }
+
+    override fun onStart() {
+        super.onStart()
+        eventBus.register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        eventBus.unregister(this)
     }
 
     interface Listener {

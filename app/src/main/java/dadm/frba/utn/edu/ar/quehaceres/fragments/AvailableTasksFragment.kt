@@ -12,6 +12,7 @@ import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.services.Services
 import kotlinx.android.synthetic.main.fragment_tasks_list.*
+import org.greenrobot.eventbus.EventBus
 import java.lang.IllegalStateException
 
 class AvailableTasksFragment : Fragment() {

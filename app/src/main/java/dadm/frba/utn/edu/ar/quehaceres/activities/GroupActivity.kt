@@ -1,6 +1,7 @@
 package dadm.frba.utn.edu.ar.quehaceres.activities
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -19,16 +20,21 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.ImageView
 import android.widget.Toast
+import dadm.frba.utn.edu.ar.quehaceres.OnTaskAssigned
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.fragments.AvailableTasksFragment
 import dadm.frba.utn.edu.ar.quehaceres.fragments.MyTasksFragment
+import dadm.frba.utn.edu.ar.quehaceres.services.Services
 import kotlinx.android.synthetic.main.activity_group.*
+import org.greenrobot.eventbus.EventBus
 import java.lang.IllegalStateException
 
 class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTasksFragment.Listener {
 
+    val services by lazy { Services(this) }
     var group: Api.Group? = null
+    private var eventBus = EventBus.getDefault()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -144,9 +150,22 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
         AlertDialog.Builder(this)
                 .setTitle(item.name)
                 .setMessage("Querés asignarte esta tarea?")
-                .setPositiveButton("Asignar") { _, _ -> Toast.makeText(this, "Asignar clicked", Toast.LENGTH_SHORT).show() }
+                .setPositiveButton("Asignar") { _, _ -> assignTask(item) }
                 .setNegativeButton("Cancelar") { d, _ -> d.dismiss() }
                 .show()
+    }
+
+    @SuppressLint("CheckResult")
+    private fun assignTask(item: Api.Task) {
+        services.assignTask(group!!.id, item.id)
+                .subscribe(
+                        {
+                            eventBus.post(OnTaskAssigned())
+                        },
+                        {
+                            it.printStackTrace()
+                        }
+                )
     }
 
     companion object {

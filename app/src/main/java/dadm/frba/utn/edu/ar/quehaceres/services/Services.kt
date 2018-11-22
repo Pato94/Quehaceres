@@ -57,6 +57,14 @@ class Services(private val storageService: StorageService, private val api: Api 
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
+    fun assignTask(groupId: Int, taskId: Int): Observable<Any> {
+        return api.assignTask(currentId(), groupId, taskId)
+                .doOnError { it.printStackTrace() }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map { Any() }
+    }
+
     private fun currentId(): Int {
         val currentUser = storageService.getUser() ?: throw IllegalAccessError("No user stored")
         return currentUser.id
