@@ -23,7 +23,7 @@ object AvailableTask {
     init {
         // Add some sample items.
         for (i in 1..COUNT) {
-            addItem(createAvailableTaskItem(i))
+            addItem(createAvailableTaskItem(i, "task "+i.toString(),i.toString()))
         }
     }
 

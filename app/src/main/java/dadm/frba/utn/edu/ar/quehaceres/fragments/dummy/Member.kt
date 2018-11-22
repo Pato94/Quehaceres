@@ -20,7 +20,7 @@ object Member {
     init {
         // Add some sample items.
         for (i in 1..COUNT) {
-            addItem(createMemberItem(i))
+            addItem(createMemberItem(i, "Member "+i.toString()))
         }
     }
 
