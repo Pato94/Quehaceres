@@ -25,7 +25,7 @@ object MemberPoints {
     init {
         // Add some sample items.
         for (i in 1..COUNT) {
-            addItem(createMemberPointsItem(i))
+            addItem(createMemberPointsItem(i, "Memberp "+i.toString(),i*1000))
         }
     }
 

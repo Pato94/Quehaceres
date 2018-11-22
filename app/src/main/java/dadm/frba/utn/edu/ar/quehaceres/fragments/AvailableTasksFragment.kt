@@ -42,6 +42,7 @@ class AvailableTasksFragment : Fragment() {
     if (view is RecyclerView) {
       with(view) {
         layoutManager = LinearLayoutManager(context)
+        //TODO: modify "AvailableTask.ITEMS" for actual availableTasks of the User
         adapter = AvailableTasksAdapter(AvailableTask.ITEMS, listener)
       }
     }
