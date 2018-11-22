@@ -18,8 +18,9 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.ImageView
-import android.widget.Toast
+import android.view.View
+import android.widget.*
+import com.squareup.picasso.Picasso
 import dadm.frba.utn.edu.ar.quehaceres.OnTaskAssigned
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
@@ -35,6 +36,7 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
     val services by lazy { Services(this) }
     var group: Api.Group? = null
     private var eventBus = EventBus.getDefault()
+    private var takingPhotoFromTask: Api.Task? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,7 +64,8 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
     }
 
-    private fun onVerifyClicked() {
+    private fun onVerifyClicked(item: Api.Task) {
+        takingPhotoFromTask = item
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.CAMERA)) {
                 // TODO
@@ -87,20 +90,56 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
             requestCode == CAPTURE_IMAGE_REQUEST && resultCode == RESULT_OK -> {
                 @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
                 val imageBitmap = data!!.extras.get("data") as Bitmap
-                confirmImage(imageBitmap)
+                confirmImage(imageBitmap, takingPhotoFromTask!!)
             }
         }
+        takingPhotoFromTask = null
     }
 
-    private fun confirmImage(imageBitmap: Bitmap) {
-        val view = ImageView(this)
-        view.setImageBitmap(imageBitmap)
+    /*
+    This is probably the most disgusting code you'll ever see
+    ...But it's 3 am and i'm just too tired for this shit
+     */
+    @SuppressLint("CheckResult")
+    private fun confirmImage(imageBitmap: Bitmap, actualTask: Api.Task) {
+        val layout = RelativeLayout(this)
+        val image = ImageView(this)
+        val progress = ProgressBar(this)
+        layout.addView(image)
+        layout.addView(progress)
+        image.layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+        progress.layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
+        image.visibility = View.GONE
+
+        var callback = { Toast.makeText(this, "Please wait for the upload to finish", Toast.LENGTH_SHORT).show() }
+        val verification: (String) -> () -> Unit = { url: String ->
+            {
+                services.verifyTask(group!!.id, actualTask.id, url)
+                        .subscribe(
+                                { Toast.makeText(this, "Task verified", Toast.LENGTH_SHORT).show() },
+                                { Toast.makeText(this, "Error verificating task", Toast.LENGTH_SHORT).show() }
+                        )
+            }
+        }
+
+        services.upload(imageBitmap)
+                .subscribe(
+                        {
+                            progress.visibility = View.GONE
+                            image.visibility = View.VISIBLE
+                            Picasso.get().load(it.file).into(image)
+                            callback = verification(it.file)
+                        },
+                        {
+                            Toast.makeText(this, "Error while uploading an image", Toast.LENGTH_SHORT).show()
+                        }
+                )
 
         AlertDialog.Builder(this)
                 .setTitle("Esta imagen es correcta?")
-                .setView(view)
-                .setPositiveButton("Confirmar", { _, _ -> Toast.makeText(this, "Confirmed", Toast.LENGTH_SHORT).show() })
-                .setNegativeButton("Cancelar", { d, _ -> d.dismiss() })
+                .setView(layout)
+                .setPositiveButton("Confirmar") { _, _ -> callback() }
+                .setNegativeButton("Cancelar") { d, _ -> d.dismiss() }
                 .show()
     }
 
@@ -141,7 +180,7 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
         AlertDialog.Builder(this)
                 .setTitle(item.name)
                 .setMessage("Querés verificar esta tarea?")
-                .setPositiveButton("Verificar") { _, _ -> onVerifyClicked() }
+                .setPositiveButton("Verificar") { _, _ -> onVerifyClicked(item) }
                 .setNegativeButton("Cancelar") { d, _ -> d.dismiss() }
                 .show()
     }

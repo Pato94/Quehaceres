@@ -1,6 +1,7 @@
 package dadm.frba.utn.edu.ar.quehaceres.services
 
 import android.content.Context
+import android.graphics.Bitmap
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.api.Api.Group
 import dadm.frba.utn.edu.ar.quehaceres.models.User
@@ -59,6 +60,21 @@ class Services(private val storageService: StorageService, private val api: Api 
 
     fun assignTask(groupId: Int, taskId: Int): Observable<Any> {
         return api.assignTask(currentId(), groupId, taskId)
+                .doOnError { it.printStackTrace() }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map { Any() }
+    }
+
+    fun upload(bitmap: Bitmap): Observable<Api.UploadResponse> {
+        return api.uploadBitmap(bitmap)
+                .doOnError { it.printStackTrace() }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    fun verifyTask(groupId: Int, taskId: Int, photoUrl: String): Observable<Any> {
+        return api.verifyTask(currentId(), groupId, taskId, photoUrl)
                 .doOnError { it.printStackTrace() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

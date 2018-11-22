@@ -1,20 +1,22 @@
 package dadm.frba.utn.edu.ar.quehaceres.api
 
+import android.graphics.Bitmap
 import android.os.Parcelable
 import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import dadm.frba.utn.edu.ar.quehaceres.models.User
 import io.reactivex.Observable
 import kotlinx.android.parcel.Parcelize
+import okhttp3.*
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import okhttp3.OkHttpClient
-import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.http.*
+import java.io.ByteArrayOutputStream
 
 class Api {
+    val BASE_URL = "https://que-haceres-api.herokuapp.com/"
     var api: Api
 
     init {
@@ -26,7 +28,7 @@ class Api {
                 .create()
 
         val retrofit = Retrofit.Builder()
-                .baseUrl("https://que-haceres-api.herokuapp.com/")
+                .baseUrl(BASE_URL)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -51,6 +53,22 @@ class Api {
 
     fun assignTask(userId: Int, groupId: Int, taskId: Int) = api.assignTask(userId, groupId, taskId)
 
+    fun uploadBitmap(bitmap: Bitmap): Observable<UploadResponse> {
+        val body = RequestBody.create(MediaType.parse("multipart/form-data"), bytesFromBitmap(bitmap))
+        val part = MultipartBody.Part.createFormData("image", "image.jpg", body)
+        return api.upload(part)
+                .map { UploadResponse("$BASE_URL${it.file}")}
+    }
+
+    fun verifyTask(userId: Int, groupId: Int, taskId: Int, photoUrl: String) =
+            api.verifyTask(userId, groupId, taskId, VerificationRequest(photoUrl))
+
+    private fun bytesFromBitmap(bitmap: Bitmap): ByteArray {
+        val stream = ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream)
+        return stream.toByteArray()
+    }
+
     interface Api {
         @POST("login")
         fun login(@Body body: LoginRequest): Observable<LoginResponse>
@@ -72,6 +90,13 @@ class Api {
 
         @POST("groups/{group_id}/assign_task/{task_id}")
         fun assignTask(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int, @Path("task_id") taskId: Int): Observable<ResponseBody>
+
+        @POST("groups/{group_id}/verify_task/{task_id}")
+        fun verifyTask(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int, @Path("task_id") taskId: Int, @Body verificationRequest: VerificationRequest): Observable<ResponseBody>
+
+        @Multipart
+        @POST("upload")
+        fun upload(@Part file: MultipartBody.Part): Observable<UploadResponse>
     }
 
     data class LoginRequest(val username: String, val password: String)
@@ -91,4 +116,8 @@ class Api {
 
     @Parcelize
     data class Task(val id: Int, val name: String): Parcelable
+
+    data class UploadResponse(val file: String)
+
+    data class VerificationRequest(val photoUrl: String)
 }
