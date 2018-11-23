@@ -11,8 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import dadm.frba.utn.edu.ar.quehaceres.R
 
-import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent
-import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent.DummyItem
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.Notification
 
 /**
@@ -78,13 +76,13 @@ class NotificationsFragment : Fragment() {
      * for more information.
      */
     interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
+        // TODO: Update argument type and name - Already Updated Argument
         fun onListFragmentInteraction(item: Notification.NotificationItem?)
     }
 
     companion object {
 
-        // TODO: Customize parameter argument names
+        // COMPLETED: Customize parameter argument names
         const val ARG_COLUMN_COUNT = "column-count"
 
         // TODO: Customize parameter initialization
