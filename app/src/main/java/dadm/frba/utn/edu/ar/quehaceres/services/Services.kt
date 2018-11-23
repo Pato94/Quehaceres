@@ -56,7 +56,16 @@ class Services(private val storageService: StorageService, private val api: Api 
                 .doOnError { it.printStackTrace() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
+
+
     }
+    fun createUser(username: String, password: String, full_name: String): Observable<Api.CreateUserResponse> {
+        return api.createUser(username, password, full_name)
+                .doOnError { it.printStackTrace() }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
 
     fun assignTask(groupId: Int, taskId: Int): Observable<Any> {
         return api.assignTask(currentId(), groupId, taskId)

@@ -3,6 +3,8 @@ package dadm.frba.utn.edu.ar.quehaceres.activities
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -22,6 +24,13 @@ class LoginActivity : AppCompatActivity() {
 
     private val services by lazy { Services(this) }
 
+    companion object {
+        fun newIntent(context: Context): Intent {
+            return Intent(context, LoginActivity::class.java)
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -35,6 +44,8 @@ class LoginActivity : AppCompatActivity() {
         })
 
         email_sign_in_button.setOnClickListener { attemptLogin() }
+
+        register_button.setOnClickListener { goToRegisterActivity() }
     }
 
     @SuppressLint("CheckResult")
@@ -57,6 +68,10 @@ class LoginActivity : AppCompatActivity() {
 
     private fun goToMainActivity() {
         startActivity(MainActivity.newIntent(this))
+    }
+
+    private fun goToRegisterActivity() {
+        startActivity(RegisterActivity.newIntent(this))
     }
 
     /**
