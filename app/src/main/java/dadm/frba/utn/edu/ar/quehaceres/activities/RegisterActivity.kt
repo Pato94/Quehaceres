@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.services.Services
 import kotlinx.android.synthetic.main.activity_register.*
@@ -27,6 +28,10 @@ class RegisterActivity : AppCompatActivity() {
     @SuppressLint("CheckResult")
     private fun register() {
         services.createUser(email.text.toString(), password.text.toString(), full_name.text.toString())
+                .doOnSubscribe {
+                    loading.visibility = View.VISIBLE
+                    register_form.visibility = View.GONE
+                }
                 .subscribe(
                         { goToLoginActivity() },
                         { it.printStackTrace() }
