@@ -49,6 +49,9 @@ class Api {
 
     fun myTasks(userId: Int, groupId: Int): Observable<List<Task>> = api.myTasks(userId, groupId)
 
+    fun createUser(username: String, password: String, full_name: String): Observable<CreateUserResponse> =
+            api.createUser(CreateUserRequest(username, password, full_name))
+
     interface Api {
         @POST("login")
         fun login(@Body body: LoginRequest): Observable<LoginResponse>
@@ -67,6 +70,10 @@ class Api {
 
         @GET("groups/{group_id}/my_tasks")
         fun myTasks(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<List<Task>>
+
+        @POST("users")
+        fun createUser(@Body user: CreateUserRequest): Observable<CreateUserResponse>
+
     }
 
     data class LoginRequest(val username: String, val password: String)
@@ -86,4 +93,8 @@ class Api {
 
     @Parcelize
     data class Task(val id: Int, val name: String): Parcelable
+
+    data class CreateUserRequest(val username: String, val password: String, val full_name: String)
+
+    data class CreateUserResponse(val id: Int)
 }
