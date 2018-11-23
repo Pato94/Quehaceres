@@ -123,7 +123,7 @@ class Api {
     @Parcelize
     data class Task(val id: Int, val name: String): Parcelable
 
-    data class CreateUserRequest(val username: String, val password: String, val full_name: String)
+    data class CreateUserRequest(val username: String, val password: String, val fullName: String)
 
     data class CreateUserResponse(val id: Int)
 
