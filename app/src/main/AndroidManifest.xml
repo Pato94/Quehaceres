@@ -40,6 +40,12 @@
 
         <activity android:name=".activities.NotificationsActivity" />
         <activity android:name=".activities.CreateGroupActivity"></activity>
+
+        <service android:name=".FirebaseService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

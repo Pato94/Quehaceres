@@ -66,6 +66,9 @@ class Api {
     fun verifyTask(userId: Int, groupId: Int, taskId: Int, photoUrl: String) =
             api.verifyTask(userId, groupId, taskId, VerificationRequest(photoUrl))
 
+    fun postToken(userId: Int, token: String): Observable<ResponseBody> =
+            api.postToken(userId, token)
+
     private fun bytesFromBitmap(bitmap: Bitmap): ByteArray {
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream)
@@ -99,6 +102,9 @@ class Api {
 
         @POST("groups/{group_id}/verify_task/{task_id}")
         fun verifyTask(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int, @Path("task_id") taskId: Int, @Body verificationRequest: VerificationRequest): Observable<ResponseBody>
+
+        @POST("token")
+        fun postToken(@Header("X-UserId") userId: Int, @Query("value") token: String): Observable<ResponseBody>
 
         @Multipart
         @POST("upload")

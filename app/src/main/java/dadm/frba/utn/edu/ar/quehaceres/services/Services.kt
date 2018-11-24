@@ -1,7 +1,9 @@
 package dadm.frba.utn.edu.ar.quehaceres.services
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.util.Log
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.api.Api.Group
 import dadm.frba.utn.edu.ar.quehaceres.models.User
@@ -15,7 +17,10 @@ class Services(private val storageService: StorageService, private val api: Api 
 
     fun login(email: String, password: String): Observable<Any> {
         return api.login(email, password)
-                .doOnNext { storageService.storeUser(it) }
+                .doOnNext {
+                    storageService.storeUser(it)
+                    storageService.getUserToken()?.let(::postToken)
+                }
                 .doOnError { it.printStackTrace() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -90,10 +95,38 @@ class Services(private val storageService: StorageService, private val api: Api 
                 .map { Any() }
     }
 
+    fun postTokenIfPossible(token: String?) {
+        if (token == null) {
+            Log.e("FIREBASE", "Token is null")
+            return
+        }
+
+        if (isloggedIn()) {
+            postToken(token)
+        } else {
+            storageService.storeUserToken(token)
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun postToken(token: String) {
+        Log.d("FIREBASE", "Trying to post token: $token")
+        api.postToken(currentId(), token)
+                .doOnError { it.printStackTrace() }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        { Log.d("FIREBASE", "Token posted: $token") },
+                        { }
+                )
+    }
+
     private fun currentId(): Int {
         val currentUser = storageService.getUser() ?: throw IllegalAccessError("No user stored")
         return currentUser.id
     }
+
+    private fun isloggedIn() = storageService.getUser() != null
 
     private fun isEmailValid(email: String) = email.contains("@")
 

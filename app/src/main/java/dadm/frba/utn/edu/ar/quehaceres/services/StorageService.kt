@@ -28,7 +28,7 @@ class StorageService(val context: Context) {
         putObject(USER_TOKEN, token)
     }
 
-    fun getUserToken(token: String): String? {
+    fun getUserToken(): String? {
         return getObject(USER_TOKEN, String::class.java)
     }
 
