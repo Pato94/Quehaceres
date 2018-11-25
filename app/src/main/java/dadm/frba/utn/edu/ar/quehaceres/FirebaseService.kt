@@ -55,9 +55,9 @@ class FirebaseService: FirebaseMessagingService() {
 
         val notificationBuilder = builder
                 .setAutoCancel(true)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.mipmap.logo)
                 .setDefaults(android.app.Notification.DEFAULT_ALL)
-                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher))
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.logo))
 
         val intent = Intent()
 

@@ -18,4 +18,8 @@
 
   <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+  <style name="AppTheme.ColdStart" parent="AppTheme.NoActionBar">
+    <item name="android:background">@drawable/background_art</item>
+  </style>
+
 </resources>
