@@ -59,6 +59,6 @@
       android:layout_height="wrap_content"
       android:layout_gravity="end|bottom"
       android:layout_margin="32dp"
-      android:src="@drawable/ic_arrow_right_white" />
+      android:src="@drawable/ic_add_white" />
 
 </android.support.design.widget.CoordinatorLayout>
