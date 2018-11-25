@@ -66,6 +66,9 @@ class Api {
     fun verifyTask(userId: Int, groupId: Int, taskId: Int, photoUrl: String) =
             api.verifyTask(userId, groupId, taskId, VerificationRequest(photoUrl))
 
+    fun createTask(userId: Int, groupId: Int, name: String, reward: Int) =
+            api.createTask(userId, groupId, CreateTaskRequest(name, reward))
+
     fun postToken(userId: Int, token: String): Observable<ResponseBody> =
             api.postToken(userId, token)
 
@@ -103,6 +106,9 @@ class Api {
         @POST("groups/{group_id}/verify_task/{task_id}")
         fun verifyTask(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int, @Path("task_id") taskId: Int, @Body verificationRequest: VerificationRequest): Observable<ResponseBody>
 
+        @POST("groups/{group_id}/task")
+        fun createTask(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int, @Body request: CreateTaskRequest): Observable<ResponseBody>
+
         @POST("token")
         fun postToken(@Header("X-UserId") userId: Int, @Query("value") token: String): Observable<ResponseBody>
 
@@ -136,4 +142,6 @@ class Api {
     data class UploadResponse(val file: String)
 
     data class VerificationRequest(val photoUrl: String)
+
+    data class CreateTaskRequest(val name: String, val reward: Int)
 }

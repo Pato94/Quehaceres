@@ -95,6 +95,14 @@ class Services(private val storageService: StorageService, private val api: Api 
                 .map { Any() }
     }
 
+    fun createTask(groupId: Int, name: String, reward: Int): Observable<Any> {
+        return api.createTask(currentId(), groupId, name, reward)
+                .doOnError { it.printStackTrace() }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map { Any() }
+    }
+
     fun postTokenIfPossible(token: String?) {
         if (token == null) {
             Log.e("FIREBASE", "Token is null")

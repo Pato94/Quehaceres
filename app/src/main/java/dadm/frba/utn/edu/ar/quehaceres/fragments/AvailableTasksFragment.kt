@@ -8,10 +8,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import dadm.frba.utn.edu.ar.quehaceres.OnTaskAssigned
+import dadm.frba.utn.edu.ar.quehaceres.OnTaskCreated
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.services.Services
-import kotlinx.android.synthetic.main.fragment_tasks_list.*
+import kotlinx.android.synthetic.main.fragment_available_tasks.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.lang.IllegalStateException
 
 class AvailableTasksFragment : Fragment() {
@@ -19,6 +23,7 @@ class AvailableTasksFragment : Fragment() {
     private val services by lazy { Services(context!!) }
     private var listener: Listener? = null
     private var groupId: Int? = null
+    private val eventBus = EventBus.getDefault()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,12 +39,16 @@ class AvailableTasksFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_tasks_list, container, false)
+        return inflater.inflate(R.layout.fragment_available_tasks, container, false)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fetchTasks()
     }
 
     @SuppressLint("CheckResult")
-    override fun onResume() {
-        super.onResume()
+    private fun fetchTasks() {
         services.availableTasks(groupId!!)
                 .doOnSubscribe {
                     loading.visibility = View.VISIBLE
@@ -59,6 +68,16 @@ class AvailableTasksFragment : Fragment() {
                 )
     }
 
+    @Subscribe
+    fun onTaskCreated(event: OnTaskCreated) {
+        fetchTasks()
+    }
+
+    @Subscribe
+    fun onTaskAssigned(event: OnTaskAssigned) {
+        fetchTasks()
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is Listener) {
@@ -71,6 +90,16 @@ class AvailableTasksFragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
         listener = null
+    }
+
+    override fun onStart() {
+        super.onStart()
+        eventBus.register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        eventBus.unregister(this)
     }
 
     interface Listener {

@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.content.ContextCompat
+import android.support.v4.view.ViewPager
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
@@ -22,9 +23,11 @@ import android.view.View
 import android.widget.*
 import com.squareup.picasso.Picasso
 import dadm.frba.utn.edu.ar.quehaceres.OnTaskAssigned
+import dadm.frba.utn.edu.ar.quehaceres.OnTaskCreated
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.fragments.AvailableTasksFragment
+import dadm.frba.utn.edu.ar.quehaceres.fragments.CreateTaskDialog
 import dadm.frba.utn.edu.ar.quehaceres.fragments.MyTasksFragment
 import dadm.frba.utn.edu.ar.quehaceres.services.Services
 import kotlinx.android.synthetic.main.activity_group.*
@@ -55,6 +58,19 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
         supportActionBar?.title = group!!.name
 
         setUpAdapter()
+
+        new_task.setOnClickListener {
+            CreateTaskDialog(this, 200, ::createTask).show()
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun createTask(name: String, reward: Int) {
+        services.createTask(group!!.id, name, reward)
+                .subscribe(
+                        { eventBus.post(OnTaskCreated()) },
+                        { it.printStackTrace() }
+                )
     }
 
     private fun setUpAdapter() {
@@ -62,6 +78,18 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
 
         container.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs))
         tabs.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(container))
+        container.addOnPageChangeListener(object: ViewPager.OnPageChangeListener {
+            override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {
+            }
+
+            override fun onPageSelected(p0: Int) {
+                if (p0 == 0) new_task.show()
+                else new_task.hide()
+            }
+
+            override fun onPageScrollStateChanged(p0: Int) {
+            }
+        })
     }
 
     private fun onVerifyClicked(item: Api.Task) {
