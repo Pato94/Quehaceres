@@ -13,7 +13,7 @@ class SelectWeeklyPointsDialog(
 ) : AlertDialog.Builder(context) {
 
     override fun show(): AlertDialog {
-        setTitle("Puntos semanales")
+        setTitle("Puntos iniciales")
         setView(R.layout.dialog_select_weekly_points)
 
         var callback: () -> Unit = {}

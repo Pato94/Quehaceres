@@ -13,7 +13,7 @@
         android:layout_margin="@dimen/text_margin"
         android:paddingStart="@dimen/text_margin"
         android:paddingEnd="@dimen/text_margin"
-        tools:text="Puntos semanales: 100"/>
+        tools:text="Puntos iniciales: 100"/>
 
     <SeekBar
         android:id="@+id/seek_bar"

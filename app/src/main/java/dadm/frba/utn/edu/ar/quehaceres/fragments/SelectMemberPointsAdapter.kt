@@ -36,7 +36,7 @@ class SelectMemberPointsAdapter(
         val item = mValues[position]
         Picasso.get().load(item.first.avatar).into(holder.avatar)
         holder.fullName.text = item.first.fullName
-        holder.weeklyPoints.text = "Puntos semanales: ${item.second}"
+        holder.weeklyPoints.text = "Puntos iniciales: ${item.second}"
 
         with(holder.mView) {
             tag = item
