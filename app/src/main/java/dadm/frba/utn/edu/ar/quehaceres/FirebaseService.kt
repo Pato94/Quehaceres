@@ -31,27 +31,31 @@ class FirebaseService: FirebaseMessagingService() {
 
         val title = data["title"]
         val message = data["message"]
-        val deepLink = data["deepLink"]
+        val deepLink = data["deeplink"]
 
         sendNotification(this, title, message, deepLink)
     }
 
     fun sendNotification(context: Context, title: String?, message: String?, deepLink: String?) {
+        Log.d("FIREBASE", "Creating push notification title: $title, message: $message, deepLink: $deepLink")
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        if (Build.VERSION.SDK_INT >= 26) {
+
+        val builder = if (Build.VERSION.SDK_INT >= 26) {
             val notificationChannel = NotificationChannel(
                     "quehaceres_default_id",
                     "quehaceres_channel_name",
                     NotificationManager.IMPORTANCE_HIGH)
             notificationChannel.description = "Any description can be given!"
             notificationManager.createNotificationChannel(notificationChannel)
+            NotificationCompat.Builder(context, "quehaceres_default_id")
+        } else {
+            NotificationCompat.Builder(context)
         }
 
-        val notificationBuilder = NotificationCompat.Builder(context)
+        val notificationBuilder = builder
                 .setAutoCancel(true)
                 .setSmallIcon(R.mipmap.ic_launcher)
-//                .setPriority(android.app.Notification.PRIORITY_MAX)
                 .setDefaults(android.app.Notification.DEFAULT_ALL)
                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher))
 
@@ -68,6 +72,6 @@ class FirebaseService: FirebaseMessagingService() {
                 .setContentText(message)
                 .setContentIntent(pendingIntent)
 
-        notificationManager.notify(0, notificationBuilder.build())
+        notificationManager.notify(2468, notificationBuilder.build())
     }
 }
