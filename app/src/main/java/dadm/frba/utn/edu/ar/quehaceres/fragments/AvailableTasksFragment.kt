@@ -1,95 +1,120 @@
 package dadm.frba.utn.edu.ar.quehaceres.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import dadm.frba.utn.edu.ar.quehaceres.OnTaskAssigned
+import dadm.frba.utn.edu.ar.quehaceres.OnTaskCreated
 import dadm.frba.utn.edu.ar.quehaceres.R
-import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.AvailableTask
+import dadm.frba.utn.edu.ar.quehaceres.api.Api
+import dadm.frba.utn.edu.ar.quehaceres.services.Services
+import kotlinx.android.synthetic.main.fragment_available_tasks.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import java.lang.IllegalStateException
 
-import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent
-import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent.DummyItem
-
-/**
- * A fragment representing a list of Items.
- * Activities containing this fragment MUST implement the
- * [AvailableTasksFragment.Listener] interface.
- */
 class AvailableTasksFragment : Fragment() {
 
-  // TODO: Customize parameters
-  private var columnCount = 1
+    private val services by lazy { Services(context!!) }
+    private var listener: Listener? = null
+    private var groupId: Int? = null
+    private val eventBus = EventBus.getDefault()
 
-  private var listener: Listener? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-
-    arguments?.let {
-      columnCount = it.getInt(ARG_COLUMN_COUNT)
-    }
-  }
-
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                            savedInstanceState: Bundle?): View? {
-    val view = inflater.inflate(R.layout.fragment_availabletasks_list, container, false)
-
-    // Set the adapter
-    if (view is RecyclerView) {
-      with(view) {
-        layoutManager = LinearLayoutManager(context)
-        adapter = AvailableTasksAdapter(AvailableTask.ITEMS, listener)
-      }
-    }
-    return view
-  }
-
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    if (context is Listener) {
-      listener = context
-    } else {
-      throw RuntimeException(context.toString() + " must implement Listener")
-    }
-  }
-
-  override fun onDetach() {
-    super.onDetach()
-    listener = null
-  }
-
-  /**
-   * This interface must be implemented by activities that contain this
-   * fragment to allow an interaction in this fragment to be communicated
-   * to the activity and potentially other fragments contained in that
-   * activity.
-   *
-   *
-   * See the Android Training lesson
-   * [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html)
-   * for more information.
-   */
-  interface Listener {
-    // TODO: Update argument type and name
-    fun onAvailableTaskClicked(item: AvailableTask.AvailableTaskItem?)
-  }
-
-  companion object {
-
-    // TODO: Customize parameter argument names
-    const val ARG_COLUMN_COUNT = "column-count"
-
-    // TODO: Customize parameter initialization
-    @JvmStatic
-    fun newInstance(columnCount: Int) =
-        AvailableTasksFragment().apply {
-          arguments = Bundle().apply {
-            putInt(ARG_COLUMN_COUNT, columnCount)
-          }
+        arguments?.let {
+            groupId = it.getInt(ARG_GROUP_ID)
         }
-  }
+
+        if (groupId == null) {
+            throw IllegalStateException("Group ID cannot be null")
+        }
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_available_tasks, container, false)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        fetchTasks()
+    }
+
+    @SuppressLint("CheckResult")
+    private fun fetchTasks() {
+        services.availableTasks(groupId!!)
+                .doOnSubscribe {
+                    loading.visibility = View.VISIBLE
+                    list.visibility = View.GONE
+                }
+                .subscribe(
+                        {
+                            loading.visibility = View.GONE
+                            list.visibility = View.VISIBLE
+                            list.adapter = AvailableTasksAdapter(it, listener)
+                        },
+                        {
+                            loading.visibility = View.GONE
+                            list.visibility = View.VISIBLE
+                            Toast.makeText(context!!, "Hubo un error al cargar la lista de tareas disponibles", Toast.LENGTH_SHORT).show()
+                        }
+                )
+    }
+
+    @Subscribe
+    fun onTaskCreated(event: OnTaskCreated) {
+        fetchTasks()
+    }
+
+    @Subscribe
+    fun onTaskAssigned(event: OnTaskAssigned) {
+        fetchTasks()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is Listener) {
+            listener = context
+        } else {
+            throw RuntimeException(context.toString() + " must implement Listener")
+        }
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
+    }
+
+    override fun onStart() {
+        super.onStart()
+        eventBus.register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        eventBus.unregister(this)
+    }
+
+    interface Listener {
+        fun onAvailableTaskClicked(item: Api.Task)
+    }
+
+    companion object {
+        const val ARG_GROUP_ID = "group-id"
+
+        @JvmStatic
+        fun newInstance(groupId: Int) =
+                AvailableTasksFragment().apply {
+                    arguments = Bundle().apply {
+                        putInt(ARG_GROUP_ID, groupId)
+                    }
+                }
+    }
 }

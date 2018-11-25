@@ -19,7 +19,7 @@ object Notification {
     init {
         // Add some sample items.
         for (i in 1..COUNT) {
-            addItem(createNotificationItem(i))
+            addItem(createNotificationItem("headline "+i.toString(),"action "+i.toString(),"description "+i.toString()))
         }
     }
 
@@ -29,19 +29,12 @@ object Notification {
         ITEM_MAP.put(item.id, item)
     }
 
-    //TODO: Replace dummy with actual Notification creation
-    private fun createNotificationItem(position: Int): NotificationItem {
-        return NotificationItem(position.toString(), "Item " + position, "dummy Action","dummy description")
+    //TODO: Replace or remove id
+    private fun createNotificationItem(headline: String, action: String, description: String): NotificationItem {
+        return NotificationItem("0", headline, action, description)
     }
 
-    private fun makeDetails(position: Int): String {
-        val builder = StringBuilder()
-        builder.append("Details about Item: ").append(position)
-        for (i in 0..position - 1) {
-            builder.append("\nMore details information here.")
-        }
-        return builder.toString()
-    }
+    //TODO: Create a createNotificationItem function from an AvaliableTask as input
 
     /**
      * A Notification representing a piece of content.

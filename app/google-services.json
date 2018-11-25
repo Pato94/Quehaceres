@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "523173731651",
+    "firebase_url": "https://quehaceres-467d0.firebaseio.com",
+    "project_id": "quehaceres-467d0",
+    "storage_bucket": "quehaceres-467d0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:523173731651:android:bff911bf817c5647",
+        "android_client_info": {
+          "package_name": "dadm.frba.utn.edu.ar.quehaceres"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "523173731651-lfitild8d8u1p0v3nh24m9k8l0ro2ebc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dadm.frba.utn.edu.ar.quehaceres",
+            "certificate_hash": "32bb021dd142da10572f14cc657e855c139b672c"
+          }
+        },
+        {
+          "client_id": "523173731651-jaoeaqa58ml71s84dob19msv3o8vkp7a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4HFdEiOMUphMqIVCq3o04ZcnifrObv6g"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "523173731651-jaoeaqa58ml71s84dob19msv3o8vkp7a.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

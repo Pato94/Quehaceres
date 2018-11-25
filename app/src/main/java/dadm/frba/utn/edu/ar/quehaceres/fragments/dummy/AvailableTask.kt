@@ -23,7 +23,7 @@ object AvailableTask {
     init {
         // Add some sample items.
         for (i in 1..COUNT) {
-            addItem(createAvailableTaskItem(i))
+            addItem(createAvailableTaskItem(i, "task "+i.toString(),i.toString()))
         }
     }
 
@@ -33,18 +33,9 @@ object AvailableTask {
         ITEM_MAP.put(item.id, item)
     }
 
-    //TODO: Replace dummy with actual AvailableTask creation
-    private fun createAvailableTaskItem(position: Int): AvailableTaskItem {
-        return AvailableTaskItem(position.toString(), "Item " + position, makeDetails(position))
-    }
-
-    private fun makeDetails(position: Int): String {
-        val builder = StringBuilder()
-        builder.append("Details about Item: ").append(position)
-        for (i in 0..position - 1) {
-            builder.append("\nMore details information here.")
-        }
-        return builder.toString()
+    //TODO: Replace or remove ID
+    private fun createAvailableTaskItem(position: Int, task_name: String, coins: String): AvailableTaskItem {
+        return AvailableTaskItem(position.toString(), task_name, coins)
     }
 
     /**

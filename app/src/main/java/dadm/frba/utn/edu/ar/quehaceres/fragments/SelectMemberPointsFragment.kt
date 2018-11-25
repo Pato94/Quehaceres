@@ -1,94 +1,110 @@
 package dadm.frba.utn.edu.ar.quehaceres.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
+import android.widget.Toast
 import dadm.frba.utn.edu.ar.quehaceres.R
-
-import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.Member
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.MemberPoints
+import dadm.frba.utn.edu.ar.quehaceres.models.User
+import dadm.frba.utn.edu.ar.quehaceres.services.Services
+import kotlinx.android.synthetic.main.fragment_member_points_list.*
 
 class SelectMemberPointsFragment : Fragment() {
 
-  private var listener: OnListFragmentInteractionListener? = null
-  private lateinit var selectedMembers: List<MemberPoints.MemberPointsItem>
+    private var listener: OnListFragmentInteractionListener? = null
+    private lateinit var selectedMembers: ArrayList<Pair<User, Int>>
+    private val services by lazy { Services(context!!) }
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-    arguments?.let {
-      @Suppress("UNCHECKED_CAST")
-      selectedMembers = it.getSerializable(ARG_SELECTED_MEMBERS) as ArrayList<MemberPoints.MemberPointsItem>
+        arguments?.let {
+            @Suppress("UNCHECKED_CAST")
+            selectedMembers = it.getSerializable(ARG_SELECTED_MEMBERS) as ArrayList<Pair<User, Int>>
+        }
+
+        setHasOptionsMenu(true)
     }
 
-    setHasOptionsMenu(true)
-  }
-
-  override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                            savedInstanceState: Bundle?): View? {
-    val view = inflater.inflate(R.layout.fragment_member_points_list, container, false)
-
-    // Set the adapter
-    with(view.findViewById<RecyclerView>(R.id.list)) {
-      adapter = MemberPointsRecyclerViewAdapter(selectedMembers, listener)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+                              savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_member_points_list, container, false)
     }
 
-    val groupName = view.findViewById<EditText>(R.id.group_name)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
-    with(view.findViewById<FloatingActionButton>(R.id.next)) {
-      setOnClickListener {
-        if (groupName.text.toString().isEmpty()) {
-          groupName.error = "Elige un nombre para el grupo"
+        list.adapter = SelectMemberPointsAdapter(selectedMembers) { user ->
+            val dialog = SelectWeeklyPointsDialog(context!!, getCurrentPoints(user)) { setNewPointsForUser(user, it) }
+            dialog.show()
+        }
+
+        next.setOnClickListener {
+            if (group_name.text.toString().isEmpty()) {
+                group_name.error = "Elige un nombre para el grupo"
+            } else {
+                createGroup()
+            }
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    private fun createGroup() {
+        services.createGroup(group_name.text.toString(), selectedMembers)
+                .subscribe(
+                        { activity?.finish() },
+                        { Toast.makeText(context!!, "Hubo un error al crear el grupo", Toast.LENGTH_SHORT).show() }
+                )
+    }
+
+    private fun getCurrentPoints(user: User) = selectedMembers.first { it.first == user }.second
+
+    private fun setNewPointsForUser(user: User, newPoints: Int) {
+        selectedMembers[selectedMembers.indexOfFirst { it.first == user }] = Pair(user, newPoints)
+        list.adapter?.notifyDataSetChanged()
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?) {
+        super.onPrepareOptionsMenu(menu)
+        activity?.title = "Crear Grupo"
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (context is OnListFragmentInteractionListener) {
+            listener = context
         } else {
-          activity?.finish()
+            throw RuntimeException(context.toString() + " must implement Listener")
         }
-      }
     }
-    return view
-  }
 
-  override fun onPrepareOptionsMenu(menu: Menu?) {
-    super.onPrepareOptionsMenu(menu)
-    activity?.title = "Crear Grupo"
-  }
-
-  override fun onAttach(context: Context) {
-    super.onAttach(context)
-    if (context is OnListFragmentInteractionListener) {
-      listener = context
-    } else {
-      throw RuntimeException(context.toString() + " must implement Listener")
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
     }
-  }
 
-  override fun onDetach() {
-    super.onDetach()
-    listener = null
-  }
+    interface OnListFragmentInteractionListener {
+        fun onPointsSelected(selected: List<MemberPoints.MemberPointsItem>)
+    }
 
-  interface OnListFragmentInteractionListener {
-    fun onPointsSelected(selected: List<MemberPoints.MemberPointsItem>)
-  }
+    companion object {
+        const val ARG_SELECTED_MEMBERS = "selected-members"
 
-  companion object {
+        fun newInstance(selectedMembers: List<User>): SelectMemberPointsFragment {
+            val arguments = Bundle()
+            val memberPoints = selectedMembers.map { Pair(it, 100) }
+            arguments.putSerializable(ARG_SELECTED_MEMBERS, ArrayList(memberPoints))
 
-    const val ARG_SELECTED_MEMBERS = "selected-members"
+            val fragment = SelectMemberPointsFragment()
+            fragment.arguments = arguments
 
-    // TODO: Customize parameter initialization
-    @JvmStatic
-    fun newInstance(selectedMembers: List<Member.MemberItem>) =
-        SelectMemberPointsFragment().apply {
-          arguments = Bundle().apply {
-            val memberPoints = selectedMembers.map { MemberPoints.MemberPointsItem(it.id, it.name, "100") }
-            putSerializable(ARG_SELECTED_MEMBERS, ArrayList(memberPoints))
-          }
+            return fragment
         }
-  }
+    }
 }

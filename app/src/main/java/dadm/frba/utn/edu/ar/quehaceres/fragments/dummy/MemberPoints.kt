@@ -25,7 +25,7 @@ object MemberPoints {
     init {
         // Add some sample items.
         for (i in 1..COUNT) {
-            addItem(createMemberPointsItem(i))
+            addItem(createMemberPointsItem(i, "Memberp "+i.toString(),i*1000))
         }
     }
 
@@ -35,18 +35,9 @@ object MemberPoints {
         ITEM_MAP.put(item.id, item)
     }
 
-    //TODO: Replace dummy with actual MemberPoints creation
-    private fun createMemberPointsItem(position: Int): MemberPointsItem {
-        return MemberPointsItem(position.toString(), "Item " + position, makeDetails(position))
-    }
-
-    private fun makeDetails(position: Int): String {
-        val builder = StringBuilder()
-        builder.append("Details about Item: ").append(position)
-        for (i in 0..position - 1) {
-            builder.append("\nMore details information here.")
-        }
-        return builder.toString()
+    //TODO: Replace o remove Id
+    private fun createMemberPointsItem(position: Int, name: String, points: Int): MemberPointsItem {
+        return MemberPointsItem(position.toString(), name, points.toString())
     }
 
     /**
@@ -57,5 +48,4 @@ object MemberPoints {
             return name + Resources.getSystem().getString(R.string.member_points_qty) + weeklyPoints + Resources.getSystem().getString(R.string.points)
         }
     }
-
 }

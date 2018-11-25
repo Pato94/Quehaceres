@@ -2,8 +2,9 @@ package dadm.frba.utn.edu.ar.quehaceres.activities
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
@@ -11,9 +12,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
 import dadm.frba.utn.edu.ar.quehaceres.R
-import dadm.frba.utn.edu.ar.quehaceres.api.Api
-import dadm.frba.utn.edu.ar.quehaceres.services.StorageService
-import dadm.frba.utn.edu.ar.quehaceres.services.UserService
+import dadm.frba.utn.edu.ar.quehaceres.services.Services
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
@@ -23,8 +22,14 @@ import kotlinx.android.synthetic.main.activity_login.*
  */
 class LoginActivity : AppCompatActivity() {
 
-    val userService by lazy { UserService(StorageService(this)) }
-    val api by lazy { Api().api }
+    private val services by lazy { Services(this) }
+
+    companion object {
+        fun newIntent(context: Context): Intent {
+            return Intent(context, LoginActivity::class.java)
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,45 +44,35 @@ class LoginActivity : AppCompatActivity() {
         })
 
         email_sign_in_button.setOnClickListener { attemptLogin() }
+
+        register_button.setOnClickListener { goToRegisterActivity() }
     }
 
+    @SuppressLint("CheckResult")
     private fun attemptLogin() {
-      val result = api.login(Api.LoginRequest(email.text.toString(), password.text.toString()))
+      services.login(email.text.toString(), password.text.toString())
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread())
           .doOnSubscribe { showProgress(true) }
           .subscribe(
                   {
                       showProgress(false)
-                      val intent = Intent(this, MainActivity::class.java)
-                      intent.putExtra("id", it.id)
-                      startActivity(intent)
-
+                      goToMainActivity()
                   },
                   {
                       showProgress(false)
-                      Toast.makeText(this@LoginActivity, "ERROR", Toast.LENGTH_SHORT).show()
+                      Toast.makeText(this@LoginActivity, it.message, Toast.LENGTH_SHORT).show()
                   }
           )
-//        userService
-//                .loginUser(email.text.toString(), password.text.toString())
-//                .doOnSubscribe { showProgress(true) }
-//                .subscribe(
-//                        {
-//                            showProgress(false)
-//                            goToMainActivity()
-//                        },
-//                        {
-//                            showProgress(false)
-//                            Toast.makeText(this@LoginActivity, "ERROR", Toast.LENGTH_SHORT).show()
-//                        }
-//                )
     }
 
-//    private fun goToMainActivity(val id: Int) {
- //       MainActivity.newIntent(this).putExtra("id", id)
- //       startActivity(MainActivity.newIntent(this))
-//    }
+    private fun goToMainActivity() {
+        startActivity(MainActivity.newIntent(this))
+    }
+
+    private fun goToRegisterActivity() {
+        startActivity(RegisterActivity.newIntent(this))
+    }
 
     /**
      * Shows the progress UI and hides the login form.
