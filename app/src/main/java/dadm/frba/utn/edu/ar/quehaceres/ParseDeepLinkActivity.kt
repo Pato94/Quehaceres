@@ -66,7 +66,7 @@ class ParseDeepLinkActivity : AppCompatActivity() {
                             stackBuilder.addNextIntent(
                                     GroupActivity.newIntent(context, group))
                             stackBuilder.addNextIntent(
-                                    NotificationsActivity.newIntent(context))
+                                    NotificationsActivity.newIntent(context, group.id))
                             stackBuilder
                         }.onErrorReturn {
                             val newStackBuilder = TaskStackBuilder.create(context)

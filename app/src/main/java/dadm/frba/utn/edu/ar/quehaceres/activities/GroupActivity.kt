@@ -196,7 +196,7 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
         val id = item.itemId
 
         if (id == R.id.action_notifications) {
-            val intent = NotificationsActivity.newIntent(this)
+            val intent = NotificationsActivity.newIntent(this, group!!.id)
             startActivity(intent)
             return true
         }

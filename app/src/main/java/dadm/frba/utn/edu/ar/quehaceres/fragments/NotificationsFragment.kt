@@ -3,53 +3,34 @@ package dadm.frba.utn.edu.ar.quehaceres.fragments
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import dadm.frba.utn.edu.ar.quehaceres.R
 
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.Notification
+import kotlinx.android.synthetic.main.fragment_notification_list.*
+import java.lang.IllegalStateException
 
-/**
- * A fragment representing a list of Items.
- * Activities containing this fragment MUST implement the
- * [NotificationsFragment.OnListFragmentInteractionListener] interface.
- */
 class NotificationsFragment : Fragment() {
-
-    // TODO: Customize parameters
-    private var columnCount = 1
-
+    private var groupId: Int? = null
     private var listener: OnListFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        arguments?.let {
-            columnCount = it.getInt(ARG_COLUMN_COUNT)
-        }
+        groupId = arguments?.getInt(ARG_GROUP_ID) ?: throw IllegalStateException("A group id must be provided")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_notification_list, container, false)
-
-        // Set the adapter
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = when {
-                    columnCount <= 1 -> LinearLayoutManager(context)
-                    else -> GridLayoutManager(context, columnCount)
-                }
-                adapter = MyNotificationRecyclerViewAdapter(Notification.ITEMS, listener)
-            }
-        }
-        return view
+        return inflater.inflate(R.layout.fragment_notification_list, container, false)
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        list.adapter = MyNotificationRecyclerViewAdapter(Notification.ITEMS, listener)
+    }
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnListFragmentInteractionListener) {
@@ -64,33 +45,18 @@ class NotificationsFragment : Fragment() {
         listener = null
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson
-     * [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html)
-     * for more information.
-     */
     interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name - Already Updated Argument
         fun onListFragmentInteraction(item: Notification.NotificationItem?)
     }
 
     companion object {
+        const val ARG_GROUP_ID = "group-id"
 
-        // COMPLETED: Customize parameter argument names
-        const val ARG_COLUMN_COUNT = "column-count"
-
-        // TODO: Customize parameter initialization
         @JvmStatic
-        fun newInstance(columnCount: Int) =
+        fun newInstance(groupId: Int) =
                 NotificationsFragment().apply {
                     arguments = Bundle().apply {
-                        putInt(ARG_COLUMN_COUNT, columnCount)
+                        putInt(ARG_GROUP_ID, groupId)
                     }
                 }
     }
