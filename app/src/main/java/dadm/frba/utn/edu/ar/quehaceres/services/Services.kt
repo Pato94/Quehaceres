@@ -64,8 +64,13 @@ class Services(private val storageService: StorageService, private val api: Api 
 
 
     }
-    fun createUser(username: String, password: String, full_name: String): Observable<Api.CreateUserResponse> {
-        return api.createUser(username, password, full_name)
+    fun createUser(username: String, password: String, fullName: String): Observable<User> {
+        return api.createUser(username, password, fullName)
+                .map { User(it.id, username, fullName) }
+                .doOnNext {
+                    storageService.storeUser(it)
+                    storageService.getUserToken()?.let(::postToken)
+                }
                 .doOnError { it.printStackTrace() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -109,7 +114,7 @@ class Services(private val storageService: StorageService, private val api: Api 
             return
         }
 
-        if (isloggedIn()) {
+        if (isLoggedIn()) {
             postToken(token)
         } else {
             storageService.storeUserToken(token)
@@ -134,7 +139,7 @@ class Services(private val storageService: StorageService, private val api: Api 
         return currentUser.id
     }
 
-    private fun isloggedIn() = storageService.getUser() != null
+    fun isLoggedIn() = storageService.getUser() != null
 
     private fun isEmailValid(email: String) = email.contains("@")
 

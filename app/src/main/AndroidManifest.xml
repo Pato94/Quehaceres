@@ -18,13 +18,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.LoginActivity"
-            android:label="@string/title_activity_login">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:label="@string/title_activity_login"/>
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/title_activity_main"
@@ -37,9 +31,27 @@
             android:name=".activities.RegisterActivity"
             android:label="Register"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity android:name=".activities.NotificationsActivity" />
-        <activity android:name=".activities.CreateGroupActivity"></activity>
+        <activity android:name=".activities.CreateGroupActivity" />
+        <activity android:name=".ParseDeepLinkActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <!-- Handles any quehaceres://deeplink URI's -->
+                <data
+                    android:host="deeplink"
+                    android:scheme="quehaceres" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
 
         <service android:name=".FirebaseService">
             <intent-filter>

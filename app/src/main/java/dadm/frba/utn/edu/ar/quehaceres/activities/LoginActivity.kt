@@ -11,6 +11,7 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
+import dadm.frba.utn.edu.ar.quehaceres.ParseDeepLinkActivity
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.services.Services
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -23,16 +24,21 @@ import kotlinx.android.synthetic.main.activity_login.*
 class LoginActivity : AppCompatActivity() {
 
     private val services by lazy { Services(this) }
+    private var deeplink: String? = null
 
     companion object {
-        fun newIntent(context: Context): Intent {
-            return Intent(context, LoginActivity::class.java)
+        const val ARG_DEEPLINK = "deeplink"
+
+        fun newIntent(context: Context, deeplink: String?): Intent {
+            val intent = Intent(context, LoginActivity::class.java)
+            deeplink?.let { intent.putExtra(ARG_DEEPLINK, it) }
+            return intent
         }
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        deeplink = intent.extras?.getString(ARG_DEEPLINK)
         setContentView(R.layout.activity_login)
 
         password.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
@@ -57,7 +63,7 @@ class LoginActivity : AppCompatActivity() {
           .subscribe(
                   {
                       showProgress(false)
-                      goToMainActivity()
+                      startApp()
                   },
                   {
                       showProgress(false)
@@ -66,12 +72,16 @@ class LoginActivity : AppCompatActivity() {
           )
     }
 
-    private fun goToMainActivity() {
-        startActivity(MainActivity.newIntent(this))
+    @SuppressLint("CheckResult")
+    private fun startApp() {
+        ParseDeepLinkActivity.routeUser(this, deeplink)
+                .subscribe {
+                    it.startActivities()
+                }
     }
 
     private fun goToRegisterActivity() {
-        startActivity(RegisterActivity.newIntent(this))
+        startActivity(RegisterActivity.newIntent(this, deeplink))
     }
 
     /**

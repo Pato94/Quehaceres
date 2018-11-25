@@ -239,7 +239,7 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
         const val CAMERA_PERMISSION_REQUEST = 1001
         const val CAPTURE_IMAGE_REQUEST = 1002
 
-        fun newIntent(group: Api.Group, context: Context): Intent {
+        fun newIntent(context: Context, group: Api.Group): Intent {
             val intent = Intent(context, GroupActivity::class.java)
             intent.putExtra("GROUP", group)
             return intent
