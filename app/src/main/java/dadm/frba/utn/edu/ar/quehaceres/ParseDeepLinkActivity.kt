@@ -27,7 +27,7 @@ class ParseDeepLinkActivity : AppCompatActivity() {
     @SuppressLint("CheckResult")
     override fun onResume() {
         super.onResume()
-        val deeplink: String? = intent.data?.toString()
+        val deeplink: String? = (intent.data ?: intent.extras?.get("deeplink")).toString()
 
         routeUser(this, deeplink)
                 .subscribe { taskBuilder -> taskBuilder.startActivities() }
