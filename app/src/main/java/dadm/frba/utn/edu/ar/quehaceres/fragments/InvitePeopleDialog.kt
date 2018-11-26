@@ -8,6 +8,7 @@ import android.support.v4.app.ShareCompat
 import android.support.v7.app.AlertDialog
 import android.widget.Toast
 import dadm.frba.utn.edu.ar.quehaceres.R
+import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import kotlinx.android.synthetic.main.dialog_invite_people.*
 
 class InvitePeopleDialog(
@@ -21,7 +22,7 @@ class InvitePeopleDialog(
 
         val dialog = super.show()
 
-        dialog.link.setText("quehaceres://deeplink/groups/$groupId/add")
+        dialog.link.setText("${Api.BASE_URL}/invite/$groupId")
         dialog.copy.setOnClickListener {
             val clipboard = activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip: ClipData = ClipData.newPlainText("Share link", dialog.link.text.toString())

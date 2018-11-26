@@ -17,7 +17,9 @@ import retrofit2.http.*
 import java.io.ByteArrayOutputStream
 
 class Api {
-    val BASE_URL = "https://que-haceres-api.herokuapp.com/"
+    companion object {
+        const val BASE_URL = "https://que-haceres-api.herokuapp.com/"
+    }
     var api: Api
 
     init {
