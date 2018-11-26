@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import dadm.frba.utn.edu.ar.quehaceres.OnTaskAssigned
+import dadm.frba.utn.edu.ar.quehaceres.OnTaskVerified
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.services.Services
@@ -64,6 +65,11 @@ class MyTasksFragment : Fragment() {
 
     @Subscribe
     fun onTaskAssigned(event: OnTaskAssigned) {
+        loadMyTasks()
+    }
+
+    @Subscribe
+    fun onTaskVerified(event: OnTaskVerified) {
         loadMyTasks()
     }
 

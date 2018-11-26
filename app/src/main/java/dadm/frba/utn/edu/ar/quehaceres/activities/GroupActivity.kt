@@ -25,6 +25,7 @@ import android.widget.*
 import com.facebook.drawee.view.SimpleDraweeView
 import dadm.frba.utn.edu.ar.quehaceres.OnTaskAssigned
 import dadm.frba.utn.edu.ar.quehaceres.OnTaskCreated
+import dadm.frba.utn.edu.ar.quehaceres.OnTaskVerified
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.fragments.AvailableTasksFragment
@@ -146,7 +147,7 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
             {
                 services.verifyTask(group!!.id, actualTask.id, url)
                         .subscribe(
-                                { Toast.makeText(this, "Task verified", Toast.LENGTH_SHORT).show() },
+                                { eventBus.post(OnTaskVerified()) },
                                 { Toast.makeText(this, "Error verificating task", Toast.LENGTH_SHORT).show() }
                         )
             }

@@ -129,8 +129,8 @@ class Api {
 
     data class CreateGroupRequest(val name: String, val members: List<UserAndPoints>)
 
-    data class RemoteTask(val id: Int, val name: String, val reward: Int, val createdBy: LoginResponse) {
-        fun toTask() = Task(id, name, reward, createdBy = User(createdBy))
+    data class RemoteTask(val id: Int, val name: String, val reward: Int, val createdBy: LoginResponse, val status: String?) {
+        fun toTask() = Task(id, name, reward, User(createdBy), status)
     }
 
     @Parcelize
@@ -146,7 +146,7 @@ class Api {
     data class MemberTasks(val member: Int, val assigned: List<Int>) : Parcelable
 
     @Parcelize
-    data class Task(val id: Int, val name: String, val reward: Int, val createdBy: User): Parcelable
+    data class Task(val id: Int, val name: String, val reward: Int, val createdBy: User, val status: String?): Parcelable
 
     data class CreateUserRequest(val username: String, val password: String, val fullName: String)
 
@@ -158,5 +158,5 @@ class Api {
 
     data class CreateTaskRequest(val name: String, val reward: Int)
 
-    data class Notification(val producer: User, val message: String, val url: String?)
+    data class Notification(val producer: LoginResponse, val message: String, val url: String?)
 }

@@ -9,6 +9,7 @@ import android.widget.TextView
 import com.facebook.drawee.view.SimpleDraweeView
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
+import dadm.frba.utn.edu.ar.quehaceres.models.User
 
 import kotlinx.android.synthetic.main.fragment_notification.view.*
 
@@ -34,10 +35,11 @@ class MyNotificationRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
-        holder.producerName.text = item.producer.fullName
+        val producer = User(item.producer)
+        holder.producerName.text = producer.fullName
         holder.message.text = item.message
         holder.avatar.hierarchy.setProgressBarImage(CircularProgressDrawable(holder.itemView.context))
-        holder.avatar.setImageURI(item.producer.avatar)
+        holder.avatar.setImageURI(producer.avatar)
         if (item.url != null) {
             holder.photo.visibility = View.VISIBLE
             holder.photo.hierarchy.setProgressBarImage(CircularProgressDrawable(holder.itemView.context))
