@@ -64,12 +64,10 @@ class Services(private val storageService: StorageService, private val api: Api 
                 .doOnError { it.printStackTrace() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-
-
     }
-    fun createUser(username: String, password: String, fullName: String): Observable<User> {
-        return api.createUser(username, password, fullName)
-                .map { User(it.id, username, fullName) }
+
+    fun createUser(username: String, password: String, fullName: String, currentImage: String?): Observable<User> {
+        return api.createUser(username, password, fullName, currentImage)
                 .doOnNext {
                     storageService.storeUser(it)
                     storageService.getUserToken()?.let(::postToken)

@@ -52,8 +52,8 @@ class Api {
 
     fun myTasks(userId: Int, groupId: Int): Observable<List<Task>> = api.myTasks(userId, groupId).map { list -> list.map { it.toTask() } }
 
-    fun createUser(username: String, password: String, full_name: String): Observable<CreateUserResponse> =
-            api.createUser(CreateUserRequest(username, password, full_name))
+    fun createUser(username: String, password: String, full_name: String, currentImage: String?): Observable<User> =
+            api.createUser(CreateUserRequest(username, password, full_name, currentImage)).map { User(it) }
 
     fun assignTask(userId: Int, groupId: Int, taskId: Int) = api.assignTask(userId, groupId, taskId)
 
@@ -90,13 +90,13 @@ class Api {
 
     interface Api {
         @POST("login")
-        fun login(@Body body: LoginRequest): Observable<LoginResponse>
+        fun login(@Body body: LoginRequest): Observable<RemoteUser>
 
         @GET("mygroups")
         fun myGroups(@Header("X-UserId") userId: Int): Observable<List<Group>>
 
         @GET("users")
-        fun users(@Header("X-UserId") userId: Int): Observable<List<LoginResponse>>
+        fun users(@Header("X-UserId") userId: Int): Observable<List<RemoteUser>>
 
         @POST("groups")
         fun createGroup(@Header("X-UserId") userId: Int, @Body createGroupRequest: CreateGroupRequest): Observable<ResponseBody>
@@ -108,7 +108,7 @@ class Api {
         fun myTasks(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<List<RemoteTask>>
 
         @POST("users")
-        fun createUser(@Body user: CreateUserRequest): Observable<CreateUserResponse>
+        fun createUser(@Body user: CreateUserRequest): Observable<RemoteUser>
 
         @POST("groups/{group_id}/assign_task/{task_id}")
         fun assignTask(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int, @Path("task_id") taskId: Int): Observable<ResponseBody>
@@ -141,11 +141,11 @@ class Api {
 
     data class LoginRequest(val username: String, val password: String)
 
-    data class LoginResponse(val id: Int, val username: String, val password: String, val fullName: String)
+    data class RemoteUser(val id: Int, val username: String, val password: String, val fullName: String, val photoUrl: String)
 
     data class CreateGroupRequest(val name: String, val members: List<UserAndPoints>)
 
-    data class RemoteTask(val id: Int, val name: String, val reward: Int, val createdBy: LoginResponse, val status: String?) {
+    data class RemoteTask(val id: Int, val name: String, val reward: Int, val createdBy: RemoteUser, val status: String?) {
         fun toTask() = Task(id, name, reward, User(createdBy), status)
     }
 
@@ -164,9 +164,7 @@ class Api {
     @Parcelize
     data class Task(val id: Int, val name: String, val reward: Int, val createdBy: User, val status: String?): Parcelable
 
-    data class CreateUserRequest(val username: String, val password: String, val fullName: String)
-
-    data class CreateUserResponse(val id: Int)
+    data class CreateUserRequest(val username: String, val password: String, val fullName: String, val photoUrl: String?)
 
     data class UploadResponse(val file: String)
 
@@ -175,7 +173,7 @@ class Api {
     data class CreateTaskRequest(val name: String, val reward: Int)
 
     data class Notification(
-            val producer: LoginResponse,
+            val producer: RemoteUser,
             val type: String,
             val message: String,
             val taskId: Int,

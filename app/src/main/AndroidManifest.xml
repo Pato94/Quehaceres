@@ -21,16 +21,15 @@
             android:name=".activities.LoginActivity"
             android:label="@string/title_activity_login"/>
         <activity
+            android:name=".activities.RegisterActivity"
+            android:label="Register"/>
+        <activity
             android:name=".activities.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.GroupActivity"
             android:label="@string/title_activity_group"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".activities.RegisterActivity"
-            android:label="Register"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.NotificationsActivity" />
         <activity android:name=".activities.CreateGroupActivity" />
