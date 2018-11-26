@@ -57,13 +57,12 @@ class MyTasksFragment : Fragment() {
                             loading.visibility = View.GONE
                             list.visibility = View.VISIBLE
 
-//                            if (isEmpty(it)){
-//                                list.adapter = MyTasksAdapter(listOf(taskTrucha), listener)
-//                            }
-//                            else {
-
+                            if (isEmpty(it)) {
+                                list.visibility = View.GONE
+                                empty_state.visibility = View.VISIBLE
+                            } else {
                                 list.adapter = MyTasksAdapter(it, listener)
-//                            }
+                            }
                         },
                         {
                             loading.visibility = View.GONE

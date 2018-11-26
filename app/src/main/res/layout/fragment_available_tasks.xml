@@ -27,4 +27,12 @@
         tools:listitem="@layout/fragment_availabletasks"
         tools:visibility="visible" />
 
+    <ImageView
+        android:id="@+id/empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/if_i_had_one"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
 </FrameLayout>

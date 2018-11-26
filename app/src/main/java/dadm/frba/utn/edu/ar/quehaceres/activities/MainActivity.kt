@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import android.support.v7.widget.DividerItemDecoration
+import android.view.View
 import com.google.android.gms.common.util.CollectionUtils.isEmpty
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.services.Services
@@ -73,24 +74,23 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         super.onResume()
 
         services.myGroups()
-            .doOnSubscribe { showLoading(true) }
-            .subscribe(
-                    {
-                        showLoading(false)
+                .doOnSubscribe { showLoading(true) }
+                .subscribe(
+                        {
+                            showLoading(false)
 
-//                        if (isEmpty(it)){
-//                            adapter.groups = listOf(grupoTrucho)
-//                            adapter.notifyDataSetChanged()
-//                        }
-//                        else {
-                            adapter.groups = it
-                            adapter.notifyDataSetChanged()
-//                            }
-                    },
-                    {
-                        showLoading(false)
-                        Toast.makeText(this, "Hubo un error al cargar los grupos", Toast.LENGTH_SHORT).show()
-                    }
+                            if (isEmpty(it)) {
+                                recycler_view.visibility = View.GONE
+                                empty_state.visibility = View.VISIBLE
+                            } else {
+                                adapter.groups = it
+                                adapter.notifyDataSetChanged()
+                            }
+                        },
+                        {
+                            showLoading(false)
+                            Toast.makeText(this, "Hubo un error al cargar los grupos", Toast.LENGTH_SHORT).show()
+                        }
                 )
     }
 
