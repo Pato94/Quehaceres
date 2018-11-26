@@ -16,6 +16,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import kotlinx.android.synthetic.main.content_main.*
 import android.support.v7.widget.DividerItemDecoration
+import com.google.android.gms.common.util.CollectionUtils.isEmpty
+import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.services.Services
 
 
@@ -34,6 +36,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             startActivity(GroupActivity.newIntent(this@MainActivity, it))
         }
     }
+
+    val grupoTrucho: Api.Group = Api.Group(id = 100, name = "Este grupo no es de verdad. Aca habria un grupo si hubieras creado uno. Toca el icono con el simbolo '+'", members = listOf(), tasks = listOf())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,8 +70,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             .subscribe(
                     {
                         showLoading(false)
-                        adapter.groups = it
-                        adapter.notifyDataSetChanged()
+
+                        if (isEmpty(it)){
+                            adapter.groups = listOf(grupoTrucho)
+                            adapter.notifyDataSetChanged()
+                        }
+                        else {
+                            adapter.groups = it
+                            adapter.notifyDataSetChanged()
+                            }
                     },
                     {
                         showLoading(false)
