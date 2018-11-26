@@ -130,6 +130,13 @@ class Services(private val storageService: StorageService, private val api: Api 
         }
     }
 
+    fun addToGroup(groupId: Int): Observable<Group> {
+        return api.addToGroup(currentId(), groupId)
+                .doOnError { it.printStackTrace() }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
     @SuppressLint("CheckResult")
     private fun postToken(token: String) {
         Log.d("FIREBASE", "Trying to post token: $token")

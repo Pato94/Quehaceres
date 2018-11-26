@@ -78,6 +78,8 @@ class Api {
 
     fun getGroupNotifications(userId: Int, groupId: Int) = api.getGroupNotifications(userId, groupId)
 
+    fun addToGroup(userId: Int, groupId: Int) = api.addToGroup(userId, groupId)
+
     private fun bytesFromBitmap(bitmap: Bitmap): ByteArray {
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream)
@@ -123,6 +125,9 @@ class Api {
 
         @GET("groups/{group_id}/notifications")
         fun getGroupNotifications(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<List<Notification>>
+
+        @POST("groups/{group_id}/subscribe")
+        fun addToGroup(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<Group>
 
         @Multipart
         @POST("upload")

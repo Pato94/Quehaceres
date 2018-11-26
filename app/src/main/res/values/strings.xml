@@ -23,6 +23,7 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_notifications">Notificaciones</string>
+    <string name="action_invite">Invitar personas</string>
     <string name="title_activity_group">GroupActivity</string>
     <string name="tab_available">DISPONIBLES</string>
     <string name="tab_my_tasks">MIS TAREAS</string>

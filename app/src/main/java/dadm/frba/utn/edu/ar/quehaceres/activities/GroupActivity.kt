@@ -30,6 +30,7 @@ import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.fragments.AvailableTasksFragment
 import dadm.frba.utn.edu.ar.quehaceres.fragments.CreateTaskDialog
+import dadm.frba.utn.edu.ar.quehaceres.fragments.InvitePeopleDialog
 import dadm.frba.utn.edu.ar.quehaceres.fragments.MyTasksFragment
 import dadm.frba.utn.edu.ar.quehaceres.services.Services
 import kotlinx.android.synthetic.main.activity_group.*
@@ -202,6 +203,8 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
             val intent = NotificationsActivity.newIntent(this, group!!.id)
             startActivity(intent)
             return true
+        } else if (id == R.id.action_invite) {
+            InvitePeopleDialog(this, group!!.id).show()
         }
 
         return super.onOptionsItemSelected(item)
