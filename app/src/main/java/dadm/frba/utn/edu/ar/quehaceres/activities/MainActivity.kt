@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     private fun showLoading(loading: Boolean) {
-        // TODO
+        empty_state.visibility = View.GONE
     }
 
     override fun onBackPressed() {

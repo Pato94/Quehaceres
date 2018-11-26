@@ -57,6 +57,7 @@ class AvailableTasksFragment : Fragment() {
                 .doOnSubscribe {
                     loading.visibility = View.VISIBLE
                     list.visibility = View.GONE
+                    empty_state.visibility = View.GONE
                 }
                 .subscribe(
                         {
