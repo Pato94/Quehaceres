@@ -22,7 +22,7 @@ class InvitePeopleDialog(
 
         val dialog = super.show()
 
-        dialog.link.setText("${Api.BASE_URL}ginvite/$groupId")
+        dialog.link.setText("${Api.BASE_URL}invite/$groupId")
         dialog.copy.setOnClickListener {
             val clipboard = activity.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip: ClipData = ClipData.newPlainText("Share link", dialog.link.text.toString())
