@@ -111,13 +111,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.nav_home -> {
-                val intent = MainActivity.newIntent(this)
-                startActivity(intent)
+//                val intent = MainActivity.newIntent(this)
+//                startActivity(intent)
             }
-            R.id.nav_profile -> {
-            }
-            R.id.nav_settings -> {
-            }
+//            R.id.nav_profile -> {
+//            }
+//            R.id.nav_settings -> {
+//            }
             R.id.nav_logout -> {
                 services.logout(this)
                         .subscribe { it.startActivities() }
