@@ -26,7 +26,7 @@ class AvailableTasksFragment : Fragment() {
     private var groupId: Int? = null
     private val eventBus = EventBus.getDefault()
 
-    val taskTrucha: Api.Task = Api.Task(id = 200, name = "Esta tarea no es de verdad. Aca habria una tarea si hubieras creado una. Toca el icono con el simbolo '+'")
+//    val taskTrucha: Api.Task = Api.Task(id = 200, name = "Esta tarea no es de verdad. Aca habria una tarea si hubieras creado una. Toca el icono con el simbolo '+'", )
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,13 +63,13 @@ class AvailableTasksFragment : Fragment() {
                             loading.visibility = View.GONE
                             list.visibility = View.VISIBLE
 
-                            if (isEmpty(it)){
-
-                                list.adapter = AvailableTasksAdapter(listOf(taskTrucha), listener)
-                            }
-                            else {
+//                            if (isEmpty(it)){
+//
+//                                list.adapter = AvailableTasksAdapter(listOf(taskTrucha), listener)
+//                            }
+//                            else {
                                 list.adapter = AvailableTasksAdapter(it, listener)
-                            }
+//                            }
                         },
                         {
                             loading.visibility = View.GONE

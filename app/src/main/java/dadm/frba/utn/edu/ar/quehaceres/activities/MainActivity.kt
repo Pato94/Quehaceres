@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
-    val grupoTrucho: Api.Group = Api.Group(id = 100, name = "Este grupo no es de verdad. Aca habria un grupo si hubieras creado uno. Toca el icono con el simbolo '+'", members = listOf(), tasks = listOf())
+//    val grupoTrucho: Api.Group = Api.Group(id = 100, name = "Este grupo no es de verdad. Aca habria un grupo si hubieras creado uno. Toca el icono con el simbolo '+'", members = listOf(), tasks = listOf())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,14 +78,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                     {
                         showLoading(false)
 
-                        if (isEmpty(it)){
-                            adapter.groups = listOf(grupoTrucho)
-                            adapter.notifyDataSetChanged()
-                        }
-                        else {
+//                        if (isEmpty(it)){
+//                            adapter.groups = listOf(grupoTrucho)
+//                            adapter.notifyDataSetChanged()
+//                        }
+//                        else {
                             adapter.groups = it
                             adapter.notifyDataSetChanged()
-                            }
+//                            }
                     },
                     {
                         showLoading(false)

@@ -25,7 +25,7 @@ class MyTasksFragment : Fragment() {
     private var groupId: Int? = null
     private var eventBus: EventBus = EventBus.getDefault()
 
-    val taskTrucha: Api.Task = Api.Task(id = 100, name = "Esta tarea no es de verdad. Aca habria una tarea si te hubieras asignado una. Elegi una tarea disponible y asignatela.")
+//    val taskTrucha: Api.Task = Api.Task(id = 100, name = "Esta tarea no es de verdad. Aca habria una tarea si te hubieras asignado una. Elegi una tarea disponible y asignatela.")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,13 +57,13 @@ class MyTasksFragment : Fragment() {
                             loading.visibility = View.GONE
                             list.visibility = View.VISIBLE
 
-                            if (isEmpty(it)){
-                                list.adapter = MyTasksAdapter(listOf(taskTrucha), listener)
-                            }
-                            else {
+//                            if (isEmpty(it)){
+//                                list.adapter = MyTasksAdapter(listOf(taskTrucha), listener)
+//                            }
+//                            else {
 
                                 list.adapter = MyTasksAdapter(it, listener)
-                            }
+//                            }
                         },
                         {
                             loading.visibility = View.GONE
