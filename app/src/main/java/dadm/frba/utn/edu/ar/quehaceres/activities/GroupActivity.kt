@@ -15,13 +15,14 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
+import android.support.v4.widget.CircularProgressDrawable
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
-import com.squareup.picasso.Picasso
+import com.facebook.drawee.view.SimpleDraweeView
 import dadm.frba.utn.edu.ar.quehaceres.OnTaskAssigned
 import dadm.frba.utn.edu.ar.quehaceres.OnTaskCreated
 import dadm.frba.utn.edu.ar.quehaceres.R
@@ -131,13 +132,14 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
     @SuppressLint("CheckResult")
     private fun confirmImage(imageBitmap: Bitmap, actualTask: Api.Task) {
         val layout = RelativeLayout(this)
-        val image = ImageView(this)
+        val image = SimpleDraweeView(this)
         val progress = ProgressBar(this)
         layout.addView(image)
         layout.addView(progress)
         image.layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
         progress.layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
         image.visibility = View.GONE
+        image.hierarchy.setProgressBarImage(CircularProgressDrawable(this))
 
         var callback = { Toast.makeText(this, "Please wait for the upload to finish", Toast.LENGTH_SHORT).show() }
         val verification: (String) -> () -> Unit = { url: String ->
@@ -155,7 +157,7 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
                         {
                             progress.visibility = View.GONE
                             image.visibility = View.VISIBLE
-                            Picasso.get().load(it.file).into(image)
+                            image.setImageURI(it.file)
                             callback = verification(it.file)
                         },
                         {

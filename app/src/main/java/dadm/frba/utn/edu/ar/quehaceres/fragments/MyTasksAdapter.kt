@@ -4,14 +4,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
-
-
 import dadm.frba.utn.edu.ar.quehaceres.fragments.MyTasksFragment.Listener
-
-import kotlinx.android.synthetic.main.fragment_availabletasks.view.*
 
 class MyTasksAdapter(
     private val mValues: List<Api.Task>,
@@ -36,7 +31,7 @@ class MyTasksAdapter(
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
     val item = mValues[position]
 //    holder.mCoinsView.text = item.coins
-    holder.mTaskView.text = item.name
+//    holder.mTaskView.text = item.name
 
     with(holder.mView) {
       tag = item
@@ -47,11 +42,7 @@ class MyTasksAdapter(
   override fun getItemCount(): Int = mValues.size
 
   inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-    val mCoinsView: TextView = mView.tv_coins
-    val mTaskView: TextView = mView.tv_task
-
-    override fun toString(): String {
-      return super.toString() + " '" + mTaskView.text + "'"
-    }
+//    val mCoinsView: TextView = mView.tv_coins
+//    val mTaskView: TextView = mView.tv_task
   }
 }

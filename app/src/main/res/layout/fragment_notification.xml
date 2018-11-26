@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout     xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="12dp">
 
@@ -13,10 +14,11 @@
          android:layout_marginTop="6dp"
          android:orientation="horizontal">
 
-         <de.hdodenhof.circleimageview.CircleImageView
+         <com.facebook.drawee.view.SimpleDraweeView
              android:id="@+id/avatar"
              android:layout_width="24dp"
              android:layout_height="24dp"
+             fresco:roundAsCircle="true"
              tools:src="@mipmap/ic_launcher" />
 
          <TextView
@@ -39,7 +41,7 @@
       android:textSize="18sp"
       tools:text="ESTE ES EL MENSAJE DE LA NOTIFICACION"/>
 
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/photo"
         android:layout_width="match_parent"
         android:layout_height="140dp"

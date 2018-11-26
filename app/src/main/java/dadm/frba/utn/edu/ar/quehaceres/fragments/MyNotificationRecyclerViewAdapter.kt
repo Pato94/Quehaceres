@@ -1,12 +1,12 @@
 package dadm.frba.utn.edu.ar.quehaceres.fragments
 
+import android.support.v4.widget.CircularProgressDrawable
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
-import com.squareup.picasso.Picasso
+import com.facebook.drawee.view.SimpleDraweeView
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
 
@@ -36,10 +36,12 @@ class MyNotificationRecyclerViewAdapter(
         val item = mValues[position]
         holder.producerName.text = item.producer.fullName
         holder.message.text = item.message
-        Picasso.get().load(item.producer.avatar).into(holder.avatar)
+        holder.avatar.hierarchy.setProgressBarImage(CircularProgressDrawable(holder.itemView.context))
+        holder.avatar.setImageURI(item.producer.avatar)
         if (item.url != null) {
             holder.photo.visibility = View.VISIBLE
-            Picasso.get().load(item.url).into(holder.photo)
+            holder.photo.hierarchy.setProgressBarImage(CircularProgressDrawable(holder.itemView.context))
+            holder.photo.setImageURI(item.url)
         } else {
             holder.photo.visibility = View.GONE
         }
@@ -55,7 +57,7 @@ class MyNotificationRecyclerViewAdapter(
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val producerName: TextView = mView.producer_name
         val message: TextView = mView.message
-        val avatar: ImageView = mView.avatar
-        val photo: ImageView = mView.photo
+        val avatar: SimpleDraweeView = mView.avatar
+        val photo: SimpleDraweeView = mView.photo
     }
 }

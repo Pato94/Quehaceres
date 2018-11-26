@@ -6,6 +6,7 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import dadm.frba.utn.edu.ar.quehaceres.models.User
 import io.reactivex.Observable
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import okhttp3.*
 import retrofit2.Retrofit
@@ -47,9 +48,9 @@ class Api {
     fun createGroup(currentId: Int, name: String, usersAndPoints: List<Pair<User, Int>>) =
             api.createGroup(currentId, CreateGroupRequest(name, usersAndPoints.map { UserAndPoints(it.first.id, it.second) }))
 
-    fun availableTasks(userId: Int, groupId: Int): Observable<List<Task>> = api.availableTasks(userId, groupId)
+    fun availableTasks(userId: Int, groupId: Int): Observable<List<Task>> = api.availableTasks(userId, groupId).map { list -> list.map { it.toTask() } }
 
-    fun myTasks(userId: Int, groupId: Int): Observable<List<Task>> = api.myTasks(userId, groupId)
+    fun myTasks(userId: Int, groupId: Int): Observable<List<Task>> = api.myTasks(userId, groupId).map { list -> list.map { it.toTask() } }
 
     fun createUser(username: String, password: String, full_name: String): Observable<CreateUserResponse> =
             api.createUser(CreateUserRequest(username, password, full_name))
@@ -94,10 +95,10 @@ class Api {
         fun createGroup(@Header("X-UserId") userId: Int, @Body createGroupRequest: CreateGroupRequest): Observable<ResponseBody>
 
         @GET("groups/{group_id}/available_tasks")
-        fun availableTasks(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<List<Task>>
+        fun availableTasks(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<List<RemoteTask>>
 
         @GET("groups/{group_id}/my_tasks")
-        fun myTasks(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<List<Task>>
+        fun myTasks(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<List<RemoteTask>>
 
         @POST("users")
         fun createUser(@Body user: CreateUserRequest): Observable<CreateUserResponse>
@@ -128,17 +129,24 @@ class Api {
 
     data class CreateGroupRequest(val name: String, val members: List<UserAndPoints>)
 
+    data class RemoteTask(val id: Int, val name: String, val reward: Int, val createdBy: LoginResponse) {
+        fun toTask() = Task(id, name, reward, createdBy = User(createdBy))
+    }
+
     @Parcelize
     data class UserAndPoints(val id: Int, val points: Int): Parcelable
 
     @Parcelize
-    data class Group(val id: Int, val name: String, val members: List<UserAndPoints>, val tasks: List<MemberTasks>?) : Parcelable
+    data class Group(val id: Int, val name: String, val members: List<UserAndPoints>, val tasks: List<MemberTasks>?) : Parcelable {
+        @IgnoredOnParcel
+        val avatar = "https://api.adorable.io/avatars/64/grouperino.png"
+    }
 
     @Parcelize
     data class MemberTasks(val member: Int, val assigned: List<Int>) : Parcelable
 
     @Parcelize
-    data class Task(val id: Int, val name: String): Parcelable
+    data class Task(val id: Int, val name: String, val reward: Int, val createdBy: User): Parcelable
 
     data class CreateUserRequest(val username: String, val password: String, val fullName: String)
 

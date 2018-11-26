@@ -1,27 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="12dp"
-    android:gravity="center_vertical"
-    android:orientation="horizontal">
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <!--TODO: Adapt to notification icon-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:orientation="horizontal">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/avatar"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            fresco:roundAsCircle="true"
+            tools:src="@drawable/ic_check_circle_tealish" />
+
+        <TextView
+            android:id="@+id/producer_name"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="12dp"
+            android:textAppearance="?attr/textAppearanceListItem"
+            tools:text="Verificar Tarea 1" />
+
+        <TextView
+            android:id="@+id/reward"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Recompensa: 100" />
+
+    </LinearLayout>
 
     <TextView
-        android:id="@+id/tv_task"
-        android:layout_width="wrap_content"
+        android:id="@+id/title"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:gravity="start"
+        android:layout_marginTop="@dimen/notification_text_margin"
         android:textAppearance="?attr/textAppearanceListItem"
-        tools:text="Sacar La Basura"/>
+        android:textSize="22sp"
+        tools:text="ESTE ES EL TITULO DE LA TAREA" />
 
-    <TextView
-        android:id="@+id/tv_coins"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:gravity="end"
-        android:textAppearance="?attr/textAppearanceListItem"
-        tools:text="$$$" />
 </LinearLayout>

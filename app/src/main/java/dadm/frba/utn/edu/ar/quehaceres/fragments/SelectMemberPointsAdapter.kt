@@ -1,12 +1,12 @@
 package dadm.frba.utn.edu.ar.quehaceres.fragments
 
+import android.support.v4.widget.CircularProgressDrawable
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
-import com.squareup.picasso.Picasso
+import com.facebook.drawee.view.SimpleDraweeView
 import dadm.frba.utn.edu.ar.quehaceres.R
 
 import dadm.frba.utn.edu.ar.quehaceres.models.User
@@ -34,7 +34,8 @@ class SelectMemberPointsAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
-        Picasso.get().load(item.first.avatar).into(holder.avatar)
+        holder.avatar.hierarchy.setProgressBarImage(CircularProgressDrawable(holder.avatar.context))
+        holder.avatar.setImageURI(item.first.avatar)
         holder.fullName.text = item.first.fullName
         holder.weeklyPoints.text = "Puntos iniciales: ${item.second}"
 
@@ -47,7 +48,7 @@ class SelectMemberPointsAdapter(
     override fun getItemCount(): Int = mValues.size
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val avatar: ImageView = mView.avatar
+        val avatar: SimpleDraweeView = mView.avatar
         val fullName: TextView = mView.full_name
         val weeklyPoints: TextView = mView.weekly_points
     }
