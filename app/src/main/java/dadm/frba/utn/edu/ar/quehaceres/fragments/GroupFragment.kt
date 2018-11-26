@@ -26,6 +26,7 @@ class GroupFragment : Fragment() {
         if (group == null) {
             throw IllegalStateException("Group cannot be null")
         }
+        eventBus.register(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -47,13 +48,13 @@ class GroupFragment : Fragment() {
         group = event.group
     }
 
-    override fun onStart() {
-        super.onStart()
-        eventBus.register(this)
+    override fun onResume() {
+        super.onResume()
+        list.adapter = GroupMembersAdapter(group!!.members)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
         eventBus.unregister(this)
     }
 
