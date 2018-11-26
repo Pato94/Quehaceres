@@ -3,7 +3,9 @@ package dadm.frba.utn.edu.ar.quehaceres.services
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.support.v4.app.TaskStackBuilder
 import android.util.Log
+import dadm.frba.utn.edu.ar.quehaceres.ParseDeepLinkActivity
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.api.Api.Group
 import dadm.frba.utn.edu.ar.quehaceres.models.User
@@ -141,12 +143,26 @@ class Services(private val storageService: StorageService, private val api: Api 
                 )
     }
 
+    fun logout(context: Context): Observable<TaskStackBuilder> {
+        return api.deleteToken(currentId())
+                .map { Any() }
+                .onErrorReturn {  Any() }
+                .doOnNext {
+                    storageService.removeUser()
+                    storageService.removeUserToken()
+                }
+                .flatMap { ParseDeepLinkActivity.routeUser(context, null) }
+    }
+
+
     private fun currentId(): Int {
         val currentUser = storageService.getUser() ?: throw IllegalAccessError("No user stored")
         return currentUser.id
     }
 
     fun isLoggedIn() = storageService.getUser() != null
+
+    fun currentUser() = storageService.getUser()
 
     private fun isEmailValid(email: String) = email.contains("@")
 

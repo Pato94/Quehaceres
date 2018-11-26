@@ -73,6 +73,9 @@ class Api {
     fun postToken(userId: Int, token: String): Observable<ResponseBody> =
             api.postToken(userId, token)
 
+    fun deleteToken(userId: Int): Observable<ResponseBody> =
+            api.deleteToken(userId)
+
     fun getGroupNotifications(userId: Int, groupId: Int) = api.getGroupNotifications(userId, groupId)
 
     private fun bytesFromBitmap(bitmap: Bitmap): ByteArray {
@@ -114,6 +117,9 @@ class Api {
 
         @POST("token")
         fun postToken(@Header("X-UserId") userId: Int, @Query("value") token: String): Observable<ResponseBody>
+
+        @DELETE("token")
+        fun deleteToken(@Header("X-UserId") userId: Int): Observable<ResponseBody>
 
         @GET("groups/{group_id}/notifications")
         fun getGroupNotifications(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<List<Notification>>
