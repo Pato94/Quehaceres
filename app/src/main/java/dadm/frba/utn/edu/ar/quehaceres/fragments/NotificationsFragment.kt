@@ -18,7 +18,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.lang.IllegalStateException
 
-class NotificationsFragment : Fragment() {
+class NotificationsFragment : BaseFragment() {
 
     private val services by lazy { Services(context!!) }
     private val eventBus = EventBus.getDefault()
@@ -42,6 +42,7 @@ class NotificationsFragment : Fragment() {
 
     @SuppressLint("CheckResult")
     private fun loadNotifications() {
+        compositeSubscription.add(
         services.getGroupNotifications(groupId!!)
                 .doOnSubscribe {
                     loading.visibility = View.VISIBLE
@@ -59,6 +60,7 @@ class NotificationsFragment : Fragment() {
                             it.printStackTrace()
                         }
                 )
+        )
     }
 
     fun onNotificationClicked(notification: Api.Notification) {
@@ -75,11 +77,13 @@ class NotificationsFragment : Fragment() {
 
     @SuppressLint("CheckResult")
     fun validateTask(notification: Api.Notification) {
-        services.validateTask(groupId!!, notification.taskId)
+        compositeSubscription.add(
+                services.validateTask(groupId!!, notification.taskId)
                 .subscribe(
                         { eventBus.post(OnTaskValidated()) },
                         { Toast.makeText(context!!, "Error validating task", Toast.LENGTH_SHORT).show() }
                 )
+        )
     }
 
     @Subscribe

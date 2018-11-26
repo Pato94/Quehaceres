@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.fragment_tasks_list.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
-class MyTasksFragment : Fragment() {
+class MyTasksFragment : BaseFragment() {
 
     private val services by lazy { Services(context!!) }
     private var listener: MyTasksFragment.Listener? = null
@@ -47,6 +47,7 @@ class MyTasksFragment : Fragment() {
 
     @SuppressLint("CheckResult")
     private fun loadMyTasks() {
+        compositeSubscription.add(
         services.myTasks(groupId!!)
                 .doOnSubscribe {
                     loading.visibility = View.VISIBLE
@@ -71,6 +72,7 @@ class MyTasksFragment : Fragment() {
                             Toast.makeText(context!!, "Hubo un error al cargar mis tareas", Toast.LENGTH_SHORT).show()
                         }
                 )
+        )
     }
 
     @Subscribe

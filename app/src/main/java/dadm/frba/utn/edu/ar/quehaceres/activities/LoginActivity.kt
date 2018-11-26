@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 /**
  * A login screen that offers login via email/password.
  */
-class LoginActivity : AppCompatActivity() {
+class LoginActivity : BaseActivity() {
 
     private val services by lazy { Services(this) }
     private var deeplink: String? = null
@@ -56,6 +56,7 @@ class LoginActivity : AppCompatActivity() {
 
     @SuppressLint("CheckResult")
     private fun attemptLogin() {
+        compositeDisposable.add(
       services.login(email.text.toString(), password.text.toString())
           .subscribeOn(Schedulers.io())
           .observeOn(AndroidSchedulers.mainThread())
@@ -70,6 +71,7 @@ class LoginActivity : AppCompatActivity() {
                       Toast.makeText(this@LoginActivity, it.message, Toast.LENGTH_SHORT).show()
                   }
           )
+        )
     }
 
     @SuppressLint("CheckResult")

@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.fragment_group_member_list.*
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
-class GroupFragment : Fragment() {
+class GroupFragment : BaseFragment() {
 
     private var group: Api.Group? = null
     private var eventBus: EventBus = EventBus.getDefault()

@@ -18,7 +18,7 @@ import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.services.Services
 import kotlinx.android.synthetic.main.activity_register.*
 
-class RegisterActivity : AppCompatActivity() {
+class RegisterActivity : BaseActivity() {
 
     private val services by lazy { Services(this) }
     private var deeplink: String? = null
@@ -36,6 +36,7 @@ class RegisterActivity : AppCompatActivity() {
 
     @SuppressLint("CheckResult")
     private fun register() {
+        compositeDisposable.add(
         services.createUser(
                 email.text.toString(),
                 password.text.toString(),
@@ -53,6 +54,7 @@ class RegisterActivity : AppCompatActivity() {
                             it.printStackTrace()
                         }
                 )
+        )
     }
 
     @SuppressLint("CheckResult")
@@ -105,6 +107,7 @@ class RegisterActivity : AppCompatActivity() {
 
     @SuppressLint("CheckResult")
     private fun confirmImage(imageBitmap: Bitmap) {
+        compositeDisposable.add(
         services.upload(imageBitmap)
                 .doOnSubscribe {
                     loading_image.visibility = View.VISIBLE
@@ -123,6 +126,7 @@ class RegisterActivity : AppCompatActivity() {
                             Toast.makeText(this, "Error while uploading an image", Toast.LENGTH_SHORT).show()
                         }
                 )
+        )
     }
 
     companion object {

@@ -12,7 +12,7 @@ import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.Member
 import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.MemberPoints
 import dadm.frba.utn.edu.ar.quehaceres.models.User
 
-class CreateGroupActivity : AppCompatActivity(), SelectMembersFragment.OnListFragmentInteractionListener, SelectMemberPointsFragment.OnListFragmentInteractionListener {
+class CreateGroupActivity : BaseActivity(), SelectMembersFragment.OnListFragmentInteractionListener, SelectMemberPointsFragment.OnListFragmentInteractionListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

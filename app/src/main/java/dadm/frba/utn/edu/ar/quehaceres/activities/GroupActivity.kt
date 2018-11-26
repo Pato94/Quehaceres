@@ -31,7 +31,7 @@ import kotlinx.android.synthetic.main.activity_group.*
 import org.greenrobot.eventbus.EventBus
 import java.lang.IllegalStateException
 
-class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTasksFragment.Listener {
+class GroupActivity : BaseActivity(), AvailableTasksFragment.Listener, MyTasksFragment.Listener {
 
     val services by lazy { Services(this) }
     var group: Api.Group? = null
@@ -78,11 +78,13 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
 
         eventBus.post(OnGroupUpdated(group!!))
 
-        services.createTask(group!!.id, name, reward)
+        compositeDisposable.add(
+                services.createTask(group!!.id, name, reward)
                 .subscribe(
                         { eventBus.post(OnTaskCreated()) },
                         { it.printStackTrace() }
                 )
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
@@ -160,14 +162,17 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
         var callback = { Toast.makeText(this, "Please wait for the upload to finish", Toast.LENGTH_SHORT).show() }
         val verification: (String) -> () -> Unit = { url: String ->
             {
+                compositeDisposable.add(
                 services.verifyTask(group!!.id, actualTask.id, url)
                         .subscribe(
                                 { eventBus.post(OnTaskVerified()) },
                                 { Toast.makeText(this, "Error verificating task", Toast.LENGTH_SHORT).show() }
                         )
+                )
             }
         }
 
+        compositeDisposable.add(
         services.upload(imageBitmap)
                 .subscribe(
                         {
@@ -180,6 +185,7 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
                             Toast.makeText(this, "Error while uploading an image", Toast.LENGTH_SHORT).show()
                         }
                 )
+        )
 
         AlertDialog.Builder(this)
                 .setTitle("Esta imagen es correcta?")
@@ -248,7 +254,7 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
 
     @SuppressLint("CheckResult")
     private fun assignTask(item: Api.Task) {
-        services.assignTask(group!!.id, item.id)
+        compositeDisposable.add(services.assignTask(group!!.id, item.id)
                 .subscribe(
                         {
                             eventBus.post(OnTaskAssigned())
@@ -257,6 +263,7 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
                             it.printStackTrace()
                         }
                 )
+        )
     }
 
     companion object {

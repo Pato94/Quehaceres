@@ -19,7 +19,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import java.lang.IllegalStateException
 
-class AvailableTasksFragment : Fragment() {
+class AvailableTasksFragment : BaseFragment() {
 
     private val services by lazy { Services(context!!) }
     private var listener: Listener? = null
@@ -53,6 +53,7 @@ class AvailableTasksFragment : Fragment() {
 
     @SuppressLint("CheckResult")
     private fun fetchTasks() {
+        compositeSubscription.add(
         services.availableTasks(groupId!!)
                 .doOnSubscribe {
                     loading.visibility = View.VISIBLE
@@ -77,6 +78,7 @@ class AvailableTasksFragment : Fragment() {
                             Toast.makeText(context!!, "Hubo un error al cargar la lista de tareas disponibles", Toast.LENGTH_SHORT).show()
                         }
                 )
+        )
     }
 
     @Subscribe

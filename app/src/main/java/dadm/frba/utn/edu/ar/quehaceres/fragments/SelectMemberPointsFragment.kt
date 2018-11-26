@@ -27,7 +27,7 @@ import kotlinx.android.parcel.Parcelize
 import kotlinx.android.synthetic.main.fragment_member_points_list.*
 import java.io.Serializable
 
-class SelectMemberPointsFragment : Fragment() {
+class SelectMemberPointsFragment : BaseFragment() {
 
     private var listener: OnListFragmentInteractionListener? = null
     private lateinit var selectedMembers: ArrayList<IdAndPoints>
@@ -115,6 +115,7 @@ class SelectMemberPointsFragment : Fragment() {
 
     @SuppressLint("CheckResult")
     private fun confirmImage(imageBitmap: Bitmap) {
+        compositeSubscription.add(
         services.upload(imageBitmap)
                 .doOnSubscribe {
                     camera_indicator.visibility = View.GONE
@@ -134,15 +135,18 @@ class SelectMemberPointsFragment : Fragment() {
                             Toast.makeText(context!!, "Error while uploading an image", Toast.LENGTH_SHORT).show()
                         }
                 )
+        )
     }
 
     @SuppressLint("CheckResult")
     private fun createGroup() {
+        compositeSubscription.add(
         services.createGroup(currentImage, group_name.text.toString(), selectedMembers.map { Pair(it.user, it.points) })
                 .subscribe(
                         { activity?.finish() },
                         { Toast.makeText(context!!, "Hubo un error al crear el grupo", Toast.LENGTH_SHORT).show() }
                 )
+        )
     }
 
     private fun getCurrentPoints(user: User) = selectedMembers.first { it.user == user }.points

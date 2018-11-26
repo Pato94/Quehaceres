@@ -14,7 +14,7 @@ import dadm.frba.utn.edu.ar.quehaceres.services.Services
 import kotlinx.android.synthetic.main.fragment_members_list.*
 import java.util.*
 
-class SelectMembersFragment : Fragment() {
+class SelectMembersFragment : BaseFragment() {
 
     private var listener: OnListFragmentInteractionListener? = null
     private val services by lazy { Services(context!!) }
@@ -40,11 +40,11 @@ class SelectMembersFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         if (allUsers == null) {
-            services.allUsers()
+            compositeSubscription.add(services.allUsers()
                     .doOnNext { allUsers = it }
                     .subscribe(::setUpViews) {
                         it.printStackTrace()
-                    }
+                    })
         } else {
             setUpViews(allUsers!!)
         }
