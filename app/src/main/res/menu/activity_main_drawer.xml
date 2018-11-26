@@ -3,35 +3,31 @@
   xmlns:tools="http://schemas.android.com/tools"
   tools:showIn="navigation_view">
 
-  <group android:checkableBehavior="single">
+    <group android:checkableBehavior="single">
     <item
-      android:id="@+id/nav_camera"
-      android:icon="@drawable/ic_menu_camera"
-      android:title="Import" />
+      android:id="@+id/nav_home"
+      android:icon="@drawable/ic_menu_home"
+      android:title="@string/drawer_home_option" />
     <item
-      android:id="@+id/nav_gallery"
-      android:icon="@drawable/ic_menu_gallery"
-      android:title="Gallery" />
+      android:id="@+id/nav_profile"
+      android:icon="@drawable/ic_menu_person"
+      android:title="@string/drawer_profile" />
     <item
-      android:id="@+id/nav_slideshow"
-      android:icon="@drawable/ic_menu_slideshow"
-      android:title="Slideshow" />
-    <item
-      android:id="@+id/nav_manage"
-      android:icon="@drawable/ic_menu_manage"
-      android:title="Tools" />
+      android:id="@+id/nav_settings"
+      android:icon="@drawable/ic_menu_settings"
+      android:title="@string/drawer_settings" />
+      <item
+      android:id="@+id/nav_logout"
+      android:icon="@drawable/ic_menu_logout"
+      android:title="@string/drawer_logout" />
   </group>
 
-  <item android:title="Communicate">
+  <item android:title="@string/drawer_social">
     <menu>
       <item
         android:id="@+id/nav_share"
         android:icon="@drawable/ic_menu_share"
-        android:title="Share" />
-      <item
-        android:id="@+id/nav_send"
-        android:icon="@drawable/ic_menu_send"
-        android:title="Send" />
+        android:title="@string/drawer_share" />
     </menu>
   </item>
 

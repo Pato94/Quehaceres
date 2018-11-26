@@ -19,8 +19,8 @@
     <string name="title_activity_login">Login to QueHaceres</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_title">Gonza Test</string>
+    <string name="nav_header_subtitle">gonza@test.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_notifications">Notificaciones</string>
     <string name="title_activity_group">GroupActivity</string>
@@ -32,5 +32,11 @@
     <string name="member_points_qty">Tiene asignados</string>
     <string name="points">puntos</string>
     <string name="costs">Cuesta $</string>
+    <string name="drawer_home_option">Home</string>
+    <string name="drawer_profile">My Profile</string>
+    <string name="drawer_logout">Logout</string>
+    <string name="drawer_settings">Settings</string>
+    <string name="drawer_social">Social</string>
+    <string name="drawer_share">Share</string>
 
 </resources>

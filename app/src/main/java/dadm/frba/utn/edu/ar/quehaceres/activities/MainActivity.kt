@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.NavigationView
+import android.support.v4.app.ShareCompat
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
@@ -91,27 +92,36 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_camera -> {
-                // Handle the camera action
+            R.id.nav_home -> {
+                val intent = MainActivity.newIntent(this)
+                startActivity(intent)
             }
-            R.id.nav_gallery -> {
+            R.id.nav_profile -> {
 
             }
-            R.id.nav_slideshow -> {
+            R.id.nav_settings -> {
 
             }
-            R.id.nav_manage -> {
+            R.id.nav_logout -> {
 
             }
             R.id.nav_share -> {
-
-            }
-            R.id.nav_send -> {
-
+                val sharableText = "Bajate QUEHACERES a tu celular y empezá a administrar los quehaceres" + "de tu casa como un campeón"
+                shareText(sharableText)
             }
         }
 
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
+    }
+
+    private fun shareText(textToShare: String){
+        val mimeType : String = "text/plain"
+        val title : String = "Share Quehaceres"
+        ShareCompat.IntentBuilder.from(this)
+                .setType(mimeType)
+                .setChooserTitle(title)
+                .setText(textToShare)
+                .startChooser()
     }
 }
