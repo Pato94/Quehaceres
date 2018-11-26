@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.google.android.gms.common.util.CollectionUtils.isEmpty
 import dadm.frba.utn.edu.ar.quehaceres.OnTaskAssigned
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
@@ -22,6 +23,8 @@ class MyTasksFragment : Fragment() {
     private var listener: MyTasksFragment.Listener? = null
     private var groupId: Int? = null
     private var eventBus: EventBus = EventBus.getDefault()
+
+    val taskTrucha: Api.Task = Api.Task(id = 100, name = "Esta tarea no es de verdad. Aca habria una tarea si te hubieras asignado una. Elegi una tarea disponible y asignatela.")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +55,14 @@ class MyTasksFragment : Fragment() {
                         {
                             loading.visibility = View.GONE
                             list.visibility = View.VISIBLE
-                            list.adapter = MyTasksAdapter(it, listener)
+
+                            if (isEmpty(it)){
+                                list.adapter = MyTasksAdapter(listOf(taskTrucha), listener)
+                            }
+                            else {
+
+                                list.adapter = MyTasksAdapter(it, listener)
+                            }
                         },
                         {
                             loading.visibility = View.GONE
