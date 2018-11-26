@@ -22,7 +22,8 @@
         android:id="@+id/empty_state"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/if_i_had_one"
+        android:src="@drawable/if_i_had_one_group"
+        android:scaleType="centerCrop"
         android:visibility="gone"
         tools:visibility="visible"/>
 
