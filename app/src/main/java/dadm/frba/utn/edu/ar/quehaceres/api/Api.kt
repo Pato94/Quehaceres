@@ -45,8 +45,8 @@ class Api {
 
     fun users(userId: Int): Observable<List<User>> = api.users(userId).map { remoteUsers -> remoteUsers.map { User(it) } }
 
-    fun createGroup(currentId: Int, name: String, usersAndPoints: List<Pair<User, Int>>) =
-            api.createGroup(currentId, CreateGroupRequest(name, usersAndPoints.map { UserAndPoints(it.first.id, it.second) }))
+    fun createGroup(currentId: Int, url: String?, name: String, usersAndPoints: List<Pair<User, Int>>) =
+            api.createGroup(currentId, CreateGroupRequest(url, name, usersAndPoints.map { UserAndPoints(it.first.id, it.second) }))
 
     fun availableTasks(userId: Int, groupId: Int): Observable<List<Task>> = api.availableTasks(userId, groupId).map { list -> list.map { it.toTask() } }
 
@@ -144,7 +144,7 @@ class Api {
     @Parcelize
     data class RemoteUser(val id: Int, val username: String, val password: String, val fullName: String, val photoUrl: String): Parcelable
 
-    data class CreateGroupRequest(val name: String, val members: List<UserAndPoints>)
+    data class CreateGroupRequest(val url: String?, val name: String, val members: List<UserAndPoints>)
 
     data class RemoteTask(val id: Int, val name: String, val reward: Int, val createdBy: RemoteUser, val status: String?) {
         fun toTask() = Task(id, name, reward, User(createdBy), status)
@@ -160,10 +160,7 @@ class Api {
     }
 
     @Parcelize
-    data class Group(val id: Int, val name: String, val members: List<Member>, val tasks: List<MemberTasks>?) : Parcelable {
-        @IgnoredOnParcel
-        val avatar = "https://api.adorable.io/avatars/64/grouperino.png"
-    }
+    data class Group(val id: Int, val url: String, val name: String, val lastMessage: String, val members: List<Member>, val tasks: List<MemberTasks>?) : Parcelable
 
     @Parcelize
     data class MemberTasks(val member: Int, val assigned: List<Int>) : Parcelable

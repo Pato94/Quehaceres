@@ -44,8 +44,8 @@ class Services(private val storageService: StorageService, private val api: Api 
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
-    fun createGroup(name: String, membersAndPoints: List<Pair<User, Int>>): Observable<Any> {
-        return api.createGroup(currentId(), name, membersAndPoints)
+    fun createGroup(url: String?, name: String, membersAndPoints: List<Pair<User, Int>>): Observable<Any> {
+        return api.createGroup(currentId(), url, name, membersAndPoints)
                 .doOnError { it.printStackTrace() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

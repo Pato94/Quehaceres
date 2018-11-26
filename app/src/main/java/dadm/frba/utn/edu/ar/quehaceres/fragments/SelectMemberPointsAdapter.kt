@@ -13,7 +13,7 @@ import dadm.frba.utn.edu.ar.quehaceres.models.User
 import kotlinx.android.synthetic.main.list_item_member_points.view.*
 
 class SelectMemberPointsAdapter(
-        private val mValues: List<Pair<User, Int>>,
+        private val mValues: List<SelectMemberPointsFragment.IdAndPoints>,
         private val mListener: (User) -> Unit)
     : RecyclerView.Adapter<SelectMemberPointsAdapter.ViewHolder>() {
 
@@ -21,8 +21,8 @@ class SelectMemberPointsAdapter(
 
     init {
         mOnClickListener = View.OnClickListener { v ->
-            val item = v.tag as Pair<User, Int>
-            mListener(item.first)
+            val item = v.tag as SelectMemberPointsFragment.IdAndPoints
+            mListener(item.user)
         }
     }
 
@@ -35,9 +35,9 @@ class SelectMemberPointsAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
         holder.avatar.hierarchy.setProgressBarImage(CircularProgressDrawable(holder.avatar.context))
-        holder.avatar.setImageURI(item.first.avatar)
-        holder.fullName.text = item.first.fullName
-        holder.weeklyPoints.text = "Puntos iniciales: ${item.second}"
+        holder.avatar.setImageURI(item.user.avatar)
+        holder.fullName.text = item.user.fullName
+        holder.weeklyPoints.text = "Puntos iniciales: ${item.points}"
 
         with(holder.mView) {
             tag = item
