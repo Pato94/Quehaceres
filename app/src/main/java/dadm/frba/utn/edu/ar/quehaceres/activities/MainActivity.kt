@@ -83,6 +83,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                                 recycler_view.visibility = View.GONE
                                 empty_state.visibility = View.VISIBLE
                             } else {
+                                recycler_view.visibility = View.VISIBLE
                                 adapter.groups = it
                                 adapter.notifyDataSetChanged()
                             }
