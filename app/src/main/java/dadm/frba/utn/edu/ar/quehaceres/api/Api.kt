@@ -158,5 +158,5 @@ class Api {
 
     data class CreateTaskRequest(val name: String, val reward: Int)
 
-    data class Notification(val producer: LoginResponse, val message: String, val url: String?)
+    data class Notification(val producer: LoginResponse, val type: String, val message: String, val url: String?)
 }

@@ -52,6 +52,12 @@ class MyNotificationRecyclerViewAdapter(
             tag = item
             setOnClickListener(mOnClickListener)
         }
+
+        if (item.type == "VERIFICATION") {
+            holder.action.visibility = View.VISIBLE
+        } else {
+            holder.action.visibility = View.GONE
+        }
     }
 
     override fun getItemCount(): Int = mValues.size
@@ -61,5 +67,6 @@ class MyNotificationRecyclerViewAdapter(
         val message: TextView = mView.message
         val avatar: SimpleDraweeView = mView.avatar
         val photo: SimpleDraweeView = mView.photo
+        val action: TextView = mView.action
     }
 }

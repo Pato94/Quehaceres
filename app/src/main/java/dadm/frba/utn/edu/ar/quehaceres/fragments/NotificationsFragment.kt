@@ -53,7 +53,9 @@ class NotificationsFragment : Fragment() {
     }
 
     fun onNotificationClicked(notification: Api.Notification) {
-
+        if (notification.type == "VERIFICATION") {
+            CreateTaskDialog(context!!, 100) { a, b -> }.show()
+        }
     }
 
     override fun onAttach(context: Context) {

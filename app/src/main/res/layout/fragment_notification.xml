@@ -52,4 +52,16 @@
         tools:visibility="visible"
         tools:src="@color/accent"/>
 
+    <TextView
+        android:id="@+id/action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:text="VALIDAR"
+        android:textSize="18sp"
+        android:textColor="@color/accent"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:visibility="visible"/>
+
 </LinearLayout>
