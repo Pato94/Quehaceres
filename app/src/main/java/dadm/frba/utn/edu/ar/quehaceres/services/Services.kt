@@ -12,6 +12,7 @@ import dadm.frba.utn.edu.ar.quehaceres.models.User
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import okhttp3.ResponseBody
 
 class Services(private val storageService: StorageService, private val api: Api = Api()) {
 
@@ -132,6 +133,13 @@ class Services(private val storageService: StorageService, private val api: Api 
 
     fun addToGroup(groupId: Int): Observable<Group> {
         return api.addToGroup(currentId(), groupId)
+                .doOnError { it.printStackTrace() }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    fun validateTask(groupId: Int, taskId: Int): Observable<ResponseBody> {
+        return api.validateTask(currentId(), groupId, taskId)
                 .doOnError { it.printStackTrace() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

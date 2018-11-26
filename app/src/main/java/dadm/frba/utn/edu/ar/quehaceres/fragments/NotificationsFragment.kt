@@ -7,16 +7,21 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import dadm.frba.utn.edu.ar.quehaceres.OnTaskValidated
 import dadm.frba.utn.edu.ar.quehaceres.R
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
 
 import dadm.frba.utn.edu.ar.quehaceres.services.Services
 import kotlinx.android.synthetic.main.fragment_notification_list.*
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
 import java.lang.IllegalStateException
 
 class NotificationsFragment : Fragment() {
 
     private val services by lazy { Services(context!!) }
+    private val eventBus = EventBus.getDefault()
     private var groupId: Int? = null
     private var listener: OnListFragmentInteractionListener? = null
 
@@ -30,9 +35,13 @@ class NotificationsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_notification_list, container, false)
     }
 
-    @SuppressLint("CheckResult")
     override fun onResume() {
         super.onResume()
+        loadNotifications()
+    }
+
+    @SuppressLint("CheckResult")
+    private fun loadNotifications() {
         services.getGroupNotifications(groupId!!)
                 .doOnSubscribe {
                     loading.visibility = View.VISIBLE
@@ -54,8 +63,38 @@ class NotificationsFragment : Fragment() {
 
     fun onNotificationClicked(notification: Api.Notification) {
         if (notification.type == "VERIFICATION") {
-            CreateTaskDialog(context!!, 100) { a, b -> }.show()
+            if (notification.producer.id == services.currentUser()!!.id) {
+                Toast.makeText(context!!, "No podés validar tu propia tarea", Toast.LENGTH_SHORT).show()
+            } else if (notification.status != "to_validate") {
+                Toast.makeText(context!!, "La tarea ya está validada", Toast.LENGTH_SHORT).show()
+            } else {
+                ValidateTaskDialog(activity!!, notification, ::validateTask).show()
+            }
         }
+    }
+
+    @SuppressLint("CheckResult")
+    fun validateTask(notification: Api.Notification) {
+        services.validateTask(groupId!!, notification.taskId)
+                .subscribe(
+                        { eventBus.post(OnTaskValidated()) },
+                        { Toast.makeText(context!!, "Error validating task", Toast.LENGTH_SHORT).show() }
+                )
+    }
+
+    @Subscribe
+    fun onTaskValidated(event: OnTaskValidated) {
+        loadNotifications()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        eventBus.register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        eventBus.unregister(this)
     }
 
     override fun onAttach(context: Context) {

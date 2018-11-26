@@ -59,6 +59,8 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
     private fun setUpViews() {
         setSupportActionBar(toolbar)
         supportActionBar?.title = group!!.name
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setUpAdapter()
 
@@ -205,6 +207,10 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
             return true
         } else if (id == R.id.action_invite) {
             InvitePeopleDialog(this, group!!.id).show()
+            return true
+        } else if (id == android.R.id.home) {
+            onBackPressed()
+            return true
         }
 
         return super.onOptionsItemSelected(item)

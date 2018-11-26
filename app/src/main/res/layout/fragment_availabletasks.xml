@@ -28,6 +28,8 @@
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="12dp"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:textAppearance="?attr/textAppearanceListItem"
             tools:text="Verificar Tarea 1" />
 

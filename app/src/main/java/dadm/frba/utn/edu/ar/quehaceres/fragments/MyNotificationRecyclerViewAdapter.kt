@@ -54,6 +54,11 @@ class MyNotificationRecyclerViewAdapter(
         }
 
         if (item.type == "VERIFICATION") {
+            if (item.status == "to_validate") {
+                holder.action.text = "VALIDAR"
+            } else {
+                holder.action.text = "VALIDADA"
+            }
             holder.action.visibility = View.VISIBLE
         } else {
             holder.action.visibility = View.GONE

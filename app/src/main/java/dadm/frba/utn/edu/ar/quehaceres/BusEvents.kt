@@ -5,3 +5,5 @@ class OnTaskAssigned
 class OnTaskCreated
 
 class OnTaskVerified
+
+class OnTaskValidated

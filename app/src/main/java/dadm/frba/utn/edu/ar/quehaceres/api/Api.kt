@@ -80,6 +80,8 @@ class Api {
 
     fun addToGroup(userId: Int, groupId: Int) = api.addToGroup(userId, groupId)
 
+    fun validateTask(userId: Int, groupId: Int, taskId: Int) = api.validateTask(userId, groupId, taskId)
+
     private fun bytesFromBitmap(bitmap: Bitmap): ByteArray {
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream)
@@ -129,6 +131,9 @@ class Api {
         @POST("groups/{group_id}/subscribe")
         fun addToGroup(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<Group>
 
+        @POST("groups/{group_id}/validate/{task_id}")
+        fun validateTask(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int, @Path("task_id") taskId: Int): Observable<ResponseBody>
+
         @Multipart
         @POST("upload")
         fun upload(@Part file: MultipartBody.Part): Observable<UploadResponse>
@@ -169,5 +174,11 @@ class Api {
 
     data class CreateTaskRequest(val name: String, val reward: Int)
 
-    data class Notification(val producer: LoginResponse, val type: String, val message: String, val url: String?)
+    data class Notification(
+            val producer: LoginResponse,
+            val type: String,
+            val message: String,
+            val taskId: Int,
+            val url: String?,
+            val status: String?)
 }
