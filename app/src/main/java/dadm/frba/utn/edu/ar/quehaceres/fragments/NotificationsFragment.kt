@@ -1,5 +1,6 @@
 package dadm.frba.utn.edu.ar.quehaceres.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -7,12 +8,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import dadm.frba.utn.edu.ar.quehaceres.R
+import dadm.frba.utn.edu.ar.quehaceres.api.Api
 
-import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.Notification
+import dadm.frba.utn.edu.ar.quehaceres.services.Services
 import kotlinx.android.synthetic.main.fragment_notification_list.*
 import java.lang.IllegalStateException
 
 class NotificationsFragment : Fragment() {
+
+    private val services by lazy { Services(context!!) }
     private var groupId: Int? = null
     private var listener: OnListFragmentInteractionListener? = null
 
@@ -26,11 +30,32 @@ class NotificationsFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_notification_list, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        list.adapter = MyNotificationRecyclerViewAdapter(Notification.ITEMS, listener)
+    @SuppressLint("CheckResult")
+    override fun onResume() {
+        super.onResume()
+        services.getGroupNotifications(groupId!!)
+                .doOnSubscribe {
+                    loading.visibility = View.VISIBLE
+                    list.visibility = View.GONE
+                }
+                .subscribe(
+                        {
+                            loading.visibility = View.GONE
+                            list.visibility = View.VISIBLE
+                            list.adapter = MyNotificationRecyclerViewAdapter(it, ::onNotificationClicked)
+                        },
+                        {
+                            loading.visibility = View.GONE
+                            list.visibility = View.VISIBLE
+                            it.printStackTrace()
+                        }
+                )
     }
+
+    fun onNotificationClicked(notification: Api.Notification) {
+
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnListFragmentInteractionListener) {
@@ -46,7 +71,7 @@ class NotificationsFragment : Fragment() {
     }
 
     interface OnListFragmentInteractionListener {
-        fun onListFragmentInteraction(item: Notification.NotificationItem?)
+        fun onListFragmentInteraction(item: Api.Notification)
     }
 
     companion object {

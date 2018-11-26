@@ -40,7 +40,6 @@ class FirebaseService: FirebaseMessagingService() {
         Log.d("FIREBASE", "Creating push notification title: $title, message: $message, deepLink: $deepLink")
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-
         val builder = if (Build.VERSION.SDK_INT >= 26) {
             val notificationChannel = NotificationChannel(
                     "quehaceres_default_id",

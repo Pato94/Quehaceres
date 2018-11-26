@@ -108,6 +108,13 @@ class Services(private val storageService: StorageService, private val api: Api 
                 .map { Any() }
     }
 
+    fun getGroupNotifications(groupId: Int): Observable<List<Api.Notification>> {
+        return api.getGroupNotifications(currentId(), groupId)
+                .doOnError { it.printStackTrace() }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
     fun postTokenIfPossible(token: String?) {
         if (token == null) {
             Log.e("FIREBASE", "Token is null")

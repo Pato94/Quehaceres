@@ -5,8 +5,8 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import dadm.frba.utn.edu.ar.quehaceres.R
+import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.fragments.NotificationsFragment
-import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.Notification
 import java.lang.IllegalStateException
 
 class NotificationsActivity : AppCompatActivity(), NotificationsFragment.OnListFragmentInteractionListener {
@@ -23,7 +23,7 @@ class NotificationsActivity : AppCompatActivity(), NotificationsFragment.OnListF
         }
     }
 
-    override fun onListFragmentInteraction(item: Notification.NotificationItem?) {
+    override fun onListFragmentInteraction(item: Api.Notification) {
     }
 
     companion object {

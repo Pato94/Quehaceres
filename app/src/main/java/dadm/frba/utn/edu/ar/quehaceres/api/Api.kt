@@ -72,6 +72,8 @@ class Api {
     fun postToken(userId: Int, token: String): Observable<ResponseBody> =
             api.postToken(userId, token)
 
+    fun getGroupNotifications(userId: Int, groupId: Int) = api.getGroupNotifications(userId, groupId)
+
     private fun bytesFromBitmap(bitmap: Bitmap): ByteArray {
         val stream = ByteArrayOutputStream()
         bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream)
@@ -112,6 +114,9 @@ class Api {
         @POST("token")
         fun postToken(@Header("X-UserId") userId: Int, @Query("value") token: String): Observable<ResponseBody>
 
+        @GET("groups/{group_id}/notifications")
+        fun getGroupNotifications(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<List<Notification>>
+
         @Multipart
         @POST("upload")
         fun upload(@Part file: MultipartBody.Part): Observable<UploadResponse>
@@ -144,4 +149,6 @@ class Api {
     data class VerificationRequest(val photoUrl: String)
 
     data class CreateTaskRequest(val name: String, val reward: Int)
+
+    data class Notification(val producer: User, val message: String, val url: String?)
 }

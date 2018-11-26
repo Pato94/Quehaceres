@@ -4,33 +4,25 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import com.squareup.picasso.Picasso
 import dadm.frba.utn.edu.ar.quehaceres.R
-
-
-import dadm.frba.utn.edu.ar.quehaceres.fragments.NotificationsFragment.OnListFragmentInteractionListener
-import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent.DummyItem
-import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.Notification
+import dadm.frba.utn.edu.ar.quehaceres.api.Api
 
 import kotlinx.android.synthetic.main.fragment_notification.view.*
 
-/**
- * [RecyclerView.Adapter] that can display a NotificationItem and makes a call to the
- * specified [NotificationListener].
- */
 class MyNotificationRecyclerViewAdapter(
-        private val mValues: List<Notification.NotificationItem>,
-        private val mListener: OnListFragmentInteractionListener?)  //TODO: create NotificationListener
+        private val mValues: List<Api.Notification>,
+        private val mListener: (Api.Notification) -> Unit)
     : RecyclerView.Adapter<MyNotificationRecyclerViewAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener
 
     init {
         mOnClickListener = View.OnClickListener { v ->
-            val item = v.tag as Notification.NotificationItem
-            // Notify the active callbacks interface (the activity, if the fragment is attached to
-            // one) that an item has been selected.
-            mListener?.onListFragmentInteraction(item)
+            val item = v.tag as Api.Notification
+            mListener(item)
         }
     }
 
@@ -42,9 +34,15 @@ class MyNotificationRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
-        holder.mTaskActionView.text = item.task_action
-        holder.mTaskDescriptionView.text = item.task_description
-        holder.mTaskHeadlineView.text = item.task_headline
+        holder.producerName.text = item.producer.fullName
+        holder.message.text = item.message
+        Picasso.get().load(item.producer.avatar).into(holder.avatar)
+        if (item.url != null) {
+            holder.photo.visibility = View.VISIBLE
+            Picasso.get().load(item.url).into(holder.photo)
+        } else {
+            holder.photo.visibility = View.GONE
+        }
 
         with(holder.mView) {
             tag = item
@@ -55,12 +53,9 @@ class MyNotificationRecyclerViewAdapter(
     override fun getItemCount(): Int = mValues.size
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mTaskActionView: TextView = mView.tv_task_action
-        val mTaskDescriptionView: TextView = mView.tv_task_description
-        val mTaskHeadlineView: TextView = mView.tv_task_headline
-
-        override fun toString(): String {
-            return super.toString() + " '" + mTaskHeadlineView.text + "'"
-        }
+        val producerName: TextView = mView.producer_name
+        val message: TextView = mView.message
+        val avatar: ImageView = mView.avatar
+        val photo: ImageView = mView.photo
     }
 }

@@ -36,7 +36,6 @@ class AvailableTasksAdapter(
 
     override fun onBindViewHolder(holder: AvailableTaskViewHolder, position: Int) {
         val item = mValues[position]
-//        holder.mCoinsView.text = item.coins
         holder.mTaskView.text = item.name
 
         with(holder.mView) {
@@ -47,16 +46,8 @@ class AvailableTasksAdapter(
 
     override fun getItemCount(): Int = mValues.size
 
-    inner class AvailableTaskViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
+    class AvailableTaskViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         val mCoinsView: TextView = mView.findViewById(R.id.tv_coins)
         var mTaskView: TextView = mView.findViewById(R.id.tv_task)
-
-        fun AvailableTaskViewHolder (task: View){
-            mTaskView =  task.findViewById(R.id.tv_task)
-        }
-
-        override fun toString(): String {
-            return super.toString() + " '" + mTaskView.text + "'"
-        }
     }
 }
