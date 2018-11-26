@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.provider.MediaStore
 import android.support.design.widget.TabLayout
 import android.support.v4.app.ActivityCompat
@@ -46,7 +47,7 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        group = intent.getParcelableExtra("GROUP")
+        group = (savedInstanceState ?: intent.extras).getParcelable(ARG_GROUP)
 
         if (group == null) {
             throw IllegalStateException("Group cannot be null")
@@ -65,17 +66,33 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
         setUpAdapter()
 
         new_task.setOnClickListener {
-            CreateTaskDialog(this, 200, ::createTask).show()
+            CreateTaskDialog(this, maxPoints(), ::createTask).show()
         }
+    }
+
+    private fun maxPoints(): Int {
+        return group!!.members.first { it.id == services.currentUser()!!.id }.points + 100
     }
 
     @SuppressLint("CheckResult")
     private fun createTask(name: String, reward: Int) {
+        val currentId = services.currentUser()!!.id
+        group = group!!.copy(
+                members = group!!.members.map {
+                    if (currentId == it.id) it.copy(points = it.points - reward + 100)
+                    else it
+                })
+
         services.createTask(group!!.id, name, reward)
                 .subscribe(
                         { eventBus.post(OnTaskCreated()) },
                         { it.printStackTrace() }
                 )
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.putParcelable(ARG_GROUP, group!!)
     }
 
     private fun setUpAdapter() {
@@ -248,12 +265,13 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
     }
 
     companion object {
+        const val ARG_GROUP = "GROUP"
         const val CAMERA_PERMISSION_REQUEST = 1001
         const val CAPTURE_IMAGE_REQUEST = 1002
 
         fun newIntent(context: Context, group: Api.Group): Intent {
             val intent = Intent(context, GroupActivity::class.java)
-            intent.putExtra("GROUP", group)
+            intent.putExtra(ARG_GROUP, group)
             return intent
         }
     }
