@@ -66,7 +66,22 @@ class ParseDeepLinkActivity : AppCompatActivity() {
                             stackBuilder.addNextIntent(
                                     GroupActivity.newIntent(context, group))
                             stackBuilder.addNextIntent(
-                                    NotificationsActivity.newIntent(context))
+                                    NotificationsActivity.newIntent(context, group.id))
+                            stackBuilder
+                        }.onErrorReturn {
+                            val newStackBuilder = TaskStackBuilder.create(context)
+                            newStackBuilder.addNextIntent(MainActivity.newIntent(context))
+                            newStackBuilder
+                        }
+            }
+
+            val addGroupRegex = Regex("quehaceres://deeplink/groups/(\\d+)/add")
+            if (deeplink.matches(addGroupRegex)) {
+                val (groupId) = addGroupRegex.find(deeplink)!!.destructured
+                return services.addToGroup(groupId.toInt())
+                        .map { group ->
+                            stackBuilder.addNextIntent(
+                                    GroupActivity.newIntent(context, group))
                             stackBuilder
                         }.onErrorReturn {
                             val newStackBuilder = TaskStackBuilder.create(context)

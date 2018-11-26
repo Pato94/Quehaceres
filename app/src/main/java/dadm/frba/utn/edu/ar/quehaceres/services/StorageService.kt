@@ -20,6 +20,10 @@ class StorageService(val context: Context) {
         putObject(LOGGED_USER, user)
     }
 
+    fun removeUser() {
+        removeObject(LOGGED_USER)
+    }
+
     fun getUser(): User? {
         return getObject(LOGGED_USER, User::class.java)
     }
@@ -28,12 +32,20 @@ class StorageService(val context: Context) {
         putObject(USER_TOKEN, token)
     }
 
+    fun removeUserToken() {
+        removeObject(USER_TOKEN)
+    }
+
     fun getUserToken(): String? {
         return getObject(USER_TOKEN, String::class.java)
     }
 
     private fun putObject(key: String, thing: Any) {
         sharedPreferences.edit().putString(key, gson.toJson(thing)).apply()
+    }
+
+    private fun removeObject(key: String) {
+        sharedPreferences.edit().remove(key).apply()
     }
 
     private fun <T> getObject(key: String, typeOfThing: Class<T>): T? {

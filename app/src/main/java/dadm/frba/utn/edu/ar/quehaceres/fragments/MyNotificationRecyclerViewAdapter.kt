@@ -1,36 +1,29 @@
 package dadm.frba.utn.edu.ar.quehaceres.fragments
 
+import android.support.v4.widget.CircularProgressDrawable
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.facebook.drawee.view.SimpleDraweeView
 import dadm.frba.utn.edu.ar.quehaceres.R
-
-
-import dadm.frba.utn.edu.ar.quehaceres.fragments.NotificationsFragment.OnListFragmentInteractionListener
-import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.DummyContent.DummyItem
-import dadm.frba.utn.edu.ar.quehaceres.fragments.dummy.Notification
+import dadm.frba.utn.edu.ar.quehaceres.api.Api
+import dadm.frba.utn.edu.ar.quehaceres.models.User
 
 import kotlinx.android.synthetic.main.fragment_notification.view.*
 
-/**
- * [RecyclerView.Adapter] that can display a NotificationItem and makes a call to the
- * specified [NotificationListener].
- */
 class MyNotificationRecyclerViewAdapter(
-        private val mValues: List<Notification.NotificationItem>,
-        private val mListener: OnListFragmentInteractionListener?)  //TODO: create NotificationListener
+        private val mValues: List<Api.Notification>,
+        private val mListener: (Api.Notification) -> Unit)
     : RecyclerView.Adapter<MyNotificationRecyclerViewAdapter.ViewHolder>() {
 
     private val mOnClickListener: View.OnClickListener
 
     init {
         mOnClickListener = View.OnClickListener { v ->
-            val item = v.tag as Notification.NotificationItem
-            // Notify the active callbacks interface (the activity, if the fragment is attached to
-            // one) that an item has been selected.
-            mListener?.onListFragmentInteraction(item)
+            val item = v.tag as Api.Notification
+            mListener(item)
         }
     }
 
@@ -42,25 +35,43 @@ class MyNotificationRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
-        holder.mTaskActionView.text = item.task_action
-        holder.mTaskDescriptionView.text = item.task_description
-        holder.mTaskHeadlineView.text = item.task_headline
+        val producer = User(item.producer)
+        holder.producerName.text = producer.fullName
+        holder.message.text = item.message
+        holder.avatar.hierarchy.setProgressBarImage(CircularProgressDrawable(holder.itemView.context))
+        holder.avatar.setImageURI(producer.avatar)
+        if (item.url != null) {
+            holder.photo.visibility = View.VISIBLE
+            holder.photo.hierarchy.setProgressBarImage(CircularProgressDrawable(holder.itemView.context))
+            holder.photo.setImageURI(item.url)
+        } else {
+            holder.photo.visibility = View.GONE
+        }
 
         with(holder.mView) {
             tag = item
             setOnClickListener(mOnClickListener)
+        }
+
+        if (item.type == "VERIFICATION") {
+            if (item.status == "to_validate") {
+                holder.action.text = "VALIDAR"
+            } else {
+                holder.action.text = "VALIDADA"
+            }
+            holder.action.visibility = View.VISIBLE
+        } else {
+            holder.action.visibility = View.GONE
         }
     }
 
     override fun getItemCount(): Int = mValues.size
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val mTaskActionView: TextView = mView.tv_task_action
-        val mTaskDescriptionView: TextView = mView.tv_task_description
-        val mTaskHeadlineView: TextView = mView.tv_task_headline
-
-        override fun toString(): String {
-            return super.toString() + " '" + mTaskHeadlineView.text + "'"
-        }
+        val producerName: TextView = mView.producer_name
+        val message: TextView = mView.message
+        val avatar: SimpleDraweeView = mView.avatar
+        val photo: SimpleDraweeView = mView.photo
+        val action: TextView = mView.action
     }
 }

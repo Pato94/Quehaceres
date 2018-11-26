@@ -6,6 +6,7 @@ import com.google.gson.FieldNamingPolicy
 import com.google.gson.GsonBuilder
 import dadm.frba.utn.edu.ar.quehaceres.models.User
 import io.reactivex.Observable
+import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 import okhttp3.*
 import retrofit2.Retrofit
@@ -44,15 +45,15 @@ class Api {
 
     fun users(userId: Int): Observable<List<User>> = api.users(userId).map { remoteUsers -> remoteUsers.map { User(it) } }
 
-    fun createGroup(currentId: Int, name: String, usersAndPoints: List<Pair<User, Int>>) =
-            api.createGroup(currentId, CreateGroupRequest(name, usersAndPoints.map { UserAndPoints(it.first.id, it.second) }))
+    fun createGroup(currentId: Int, url: String?, name: String, usersAndPoints: List<Pair<User, Int>>) =
+            api.createGroup(currentId, CreateGroupRequest(url, name, usersAndPoints.map { UserAndPoints(it.first.id, it.second) }))
 
-    fun availableTasks(userId: Int, groupId: Int): Observable<List<Task>> = api.availableTasks(userId, groupId)
+    fun availableTasks(userId: Int, groupId: Int): Observable<List<Task>> = api.availableTasks(userId, groupId).map { list -> list.map { it.toTask() } }
 
-    fun myTasks(userId: Int, groupId: Int): Observable<List<Task>> = api.myTasks(userId, groupId)
+    fun myTasks(userId: Int, groupId: Int): Observable<List<Task>> = api.myTasks(userId, groupId).map { list -> list.map { it.toTask() } }
 
-    fun createUser(username: String, password: String, full_name: String): Observable<CreateUserResponse> =
-            api.createUser(CreateUserRequest(username, password, full_name))
+    fun createUser(username: String, password: String, full_name: String, currentImage: String?): Observable<User> =
+            api.createUser(CreateUserRequest(username, password, full_name, currentImage)).map { User(it) }
 
     fun assignTask(userId: Int, groupId: Int, taskId: Int) = api.assignTask(userId, groupId, taskId)
 
@@ -72,33 +73,42 @@ class Api {
     fun postToken(userId: Int, token: String): Observable<ResponseBody> =
             api.postToken(userId, token)
 
+    fun deleteToken(userId: Int): Observable<ResponseBody> =
+            api.deleteToken(userId)
+
+    fun getGroupNotifications(userId: Int, groupId: Int) = api.getGroupNotifications(userId, groupId)
+
+    fun addToGroup(userId: Int, groupId: Int) = api.addToGroup(userId, groupId)
+
+    fun validateTask(userId: Int, groupId: Int, taskId: Int) = api.validateTask(userId, groupId, taskId)
+
     private fun bytesFromBitmap(bitmap: Bitmap): ByteArray {
         val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 95, stream)
         return stream.toByteArray()
     }
 
     interface Api {
         @POST("login")
-        fun login(@Body body: LoginRequest): Observable<LoginResponse>
+        fun login(@Body body: LoginRequest): Observable<RemoteUser>
 
         @GET("mygroups")
         fun myGroups(@Header("X-UserId") userId: Int): Observable<List<Group>>
 
         @GET("users")
-        fun users(@Header("X-UserId") userId: Int): Observable<List<LoginResponse>>
+        fun users(@Header("X-UserId") userId: Int): Observable<List<RemoteUser>>
 
         @POST("groups")
         fun createGroup(@Header("X-UserId") userId: Int, @Body createGroupRequest: CreateGroupRequest): Observable<ResponseBody>
 
         @GET("groups/{group_id}/available_tasks")
-        fun availableTasks(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<List<Task>>
+        fun availableTasks(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<List<RemoteTask>>
 
         @GET("groups/{group_id}/my_tasks")
-        fun myTasks(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<List<Task>>
+        fun myTasks(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<List<RemoteTask>>
 
         @POST("users")
-        fun createUser(@Body user: CreateUserRequest): Observable<CreateUserResponse>
+        fun createUser(@Body user: CreateUserRequest): Observable<RemoteUser>
 
         @POST("groups/{group_id}/assign_task/{task_id}")
         fun assignTask(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int, @Path("task_id") taskId: Int): Observable<ResponseBody>
@@ -112,6 +122,18 @@ class Api {
         @POST("token")
         fun postToken(@Header("X-UserId") userId: Int, @Query("value") token: String): Observable<ResponseBody>
 
+        @DELETE("token")
+        fun deleteToken(@Header("X-UserId") userId: Int): Observable<ResponseBody>
+
+        @GET("groups/{group_id}/notifications")
+        fun getGroupNotifications(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<List<Notification>>
+
+        @POST("groups/{group_id}/subscribe")
+        fun addToGroup(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int): Observable<Group>
+
+        @POST("groups/{group_id}/validate/{task_id}")
+        fun validateTask(@Header("X-UserId") userId: Int, @Path("group_id") groupId: Int, @Path("task_id") taskId: Int): Observable<ResponseBody>
+
         @Multipart
         @POST("upload")
         fun upload(@Part file: MultipartBody.Part): Observable<UploadResponse>
@@ -119,29 +141,46 @@ class Api {
 
     data class LoginRequest(val username: String, val password: String)
 
-    data class LoginResponse(val id: Int, val username: String, val password: String, val fullName: String)
+    @Parcelize
+    data class RemoteUser(val id: Int, val username: String, val password: String, val fullName: String, val photoUrl: String): Parcelable
 
-    data class CreateGroupRequest(val name: String, val members: List<UserAndPoints>)
+    data class CreateGroupRequest(val url: String?, val name: String, val members: List<UserAndPoints>)
+
+    data class RemoteTask(val id: Int, val name: String, val reward: Int, val createdBy: RemoteUser, val status: String?) {
+        fun toTask() = Task(id, name, reward, User(createdBy), status)
+    }
 
     @Parcelize
     data class UserAndPoints(val id: Int, val points: Int): Parcelable
 
     @Parcelize
-    data class Group(val id: Int, val name: String, val members: List<UserAndPoints>, val tasks: List<MemberTasks>?) : Parcelable
+    data class Member(val id: Int, val user: RemoteUser, val points: Int): Parcelable {
+        @IgnoredOnParcel
+        val actualUser = User(user)
+    }
+
+    @Parcelize
+    data class Group(val id: Int, val url: String, val name: String, val lastMessage: String, val members: List<Member>, val tasks: List<MemberTasks>?) : Parcelable
 
     @Parcelize
     data class MemberTasks(val member: Int, val assigned: List<Int>) : Parcelable
 
     @Parcelize
-    data class Task(val id: Int, val name: String): Parcelable
+    data class Task(val id: Int, val name: String, val reward: Int, val createdBy: User, val status: String?): Parcelable
 
-    data class CreateUserRequest(val username: String, val password: String, val fullName: String)
-
-    data class CreateUserResponse(val id: Int)
+    data class CreateUserRequest(val username: String, val password: String, val fullName: String, val photoUrl: String?)
 
     data class UploadResponse(val file: String)
 
     data class VerificationRequest(val photoUrl: String)
 
     data class CreateTaskRequest(val name: String, val reward: Int)
+
+    data class Notification(
+            val producer: RemoteUser,
+            val type: String,
+            val message: String,
+            val taskId: Int,
+            val url: String?,
+            val status: String?)
 }

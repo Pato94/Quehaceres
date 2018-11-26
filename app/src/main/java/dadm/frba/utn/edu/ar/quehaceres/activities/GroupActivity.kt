@@ -15,20 +15,17 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
+import android.support.v4.widget.CircularProgressDrawable
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
-import com.squareup.picasso.Picasso
-import dadm.frba.utn.edu.ar.quehaceres.OnTaskAssigned
-import dadm.frba.utn.edu.ar.quehaceres.OnTaskCreated
-import dadm.frba.utn.edu.ar.quehaceres.R
+import com.facebook.drawee.view.SimpleDraweeView
+import dadm.frba.utn.edu.ar.quehaceres.*
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
-import dadm.frba.utn.edu.ar.quehaceres.fragments.AvailableTasksFragment
-import dadm.frba.utn.edu.ar.quehaceres.fragments.CreateTaskDialog
-import dadm.frba.utn.edu.ar.quehaceres.fragments.MyTasksFragment
+import dadm.frba.utn.edu.ar.quehaceres.fragments.*
 import dadm.frba.utn.edu.ar.quehaceres.services.Services
 import kotlinx.android.synthetic.main.activity_group.*
 import org.greenrobot.eventbus.EventBus
@@ -43,7 +40,7 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        group = intent.getParcelableExtra("GROUP")
+        group = (savedInstanceState ?: intent.extras).getParcelable(ARG_GROUP)
 
         if (group == null) {
             throw IllegalStateException("Group cannot be null")
@@ -56,21 +53,41 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
     private fun setUpViews() {
         setSupportActionBar(toolbar)
         supportActionBar?.title = group!!.name
+        supportActionBar?.setHomeButtonEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setUpAdapter()
 
         new_task.setOnClickListener {
-            CreateTaskDialog(this, 200, ::createTask).show()
+            CreateTaskDialog(this, maxPoints(), ::createTask).show()
         }
+    }
+
+    private fun maxPoints(): Int {
+        return group!!.members.first { it.id == services.currentUser()!!.id }.points + 100
     }
 
     @SuppressLint("CheckResult")
     private fun createTask(name: String, reward: Int) {
+        val currentId = services.currentUser()!!.id
+        group = group!!.copy(
+                members = group!!.members.map {
+                    if (currentId == it.id) it.copy(points = it.points - reward + 100)
+                    else it
+                })
+
+        eventBus.post(OnGroupUpdated(group!!))
+
         services.createTask(group!!.id, name, reward)
                 .subscribe(
                         { eventBus.post(OnTaskCreated()) },
                         { it.printStackTrace() }
                 )
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.putParcelable(ARG_GROUP, group!!)
     }
 
     private fun setUpAdapter() {
@@ -131,20 +148,21 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
     @SuppressLint("CheckResult")
     private fun confirmImage(imageBitmap: Bitmap, actualTask: Api.Task) {
         val layout = RelativeLayout(this)
-        val image = ImageView(this)
+        val image = SimpleDraweeView(this)
         val progress = ProgressBar(this)
         layout.addView(image)
         layout.addView(progress)
         image.layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
         progress.layoutParams = RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT)
         image.visibility = View.GONE
+        image.hierarchy.setProgressBarImage(CircularProgressDrawable(this))
 
         var callback = { Toast.makeText(this, "Please wait for the upload to finish", Toast.LENGTH_SHORT).show() }
         val verification: (String) -> () -> Unit = { url: String ->
             {
                 services.verifyTask(group!!.id, actualTask.id, url)
                         .subscribe(
-                                { Toast.makeText(this, "Task verified", Toast.LENGTH_SHORT).show() },
+                                { eventBus.post(OnTaskVerified()) },
                                 { Toast.makeText(this, "Error verificating task", Toast.LENGTH_SHORT).show() }
                         )
             }
@@ -155,7 +173,7 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
                         {
                             progress.visibility = View.GONE
                             image.visibility = View.VISIBLE
-                            Picasso.get().load(it.file).into(image)
+                            image.setImageURI(it.file)
                             callback = verification(it.file)
                         },
                         {
@@ -196,8 +214,14 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
         val id = item.itemId
 
         if (id == R.id.action_notifications) {
-            val intent = NotificationsActivity.newIntent(this)
+            val intent = NotificationsActivity.newIntent(this, group!!.id)
             startActivity(intent)
+            return true
+        } else if (id == R.id.action_invite) {
+            InvitePeopleDialog(this, group!!.id).show()
+            return true
+        } else if (id == android.R.id.home) {
+            onBackPressed()
             return true
         }
 
@@ -236,12 +260,13 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
     }
 
     companion object {
+        const val ARG_GROUP = "GROUP"
         const val CAMERA_PERMISSION_REQUEST = 1001
         const val CAPTURE_IMAGE_REQUEST = 1002
 
         fun newIntent(context: Context, group: Api.Group): Intent {
             val intent = Intent(context, GroupActivity::class.java)
-            intent.putExtra("GROUP", group)
+            intent.putExtra(ARG_GROUP, group)
             return intent
         }
     }
@@ -251,12 +276,13 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
         override fun getItem(position: Int): Fragment {
             return when (position) {
                 0 -> AvailableTasksFragment.newInstance(group!!.id)
-                else -> MyTasksFragment.newInstance(group!!.id)
+                1 -> MyTasksFragment.newInstance(group!!.id)
+                else -> GroupFragment.newInstance(group!!)
             }
         }
 
         override fun getCount(): Int {
-            return 2
+            return 3
         }
     }
 }

@@ -3,13 +3,16 @@ package dadm.frba.utn.edu.ar.quehaceres.services
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.support.v4.app.TaskStackBuilder
 import android.util.Log
+import dadm.frba.utn.edu.ar.quehaceres.ParseDeepLinkActivity
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.api.Api.Group
 import dadm.frba.utn.edu.ar.quehaceres.models.User
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import okhttp3.ResponseBody
 
 class Services(private val storageService: StorageService, private val api: Api = Api()) {
 
@@ -41,8 +44,8 @@ class Services(private val storageService: StorageService, private val api: Api 
                 .observeOn(AndroidSchedulers.mainThread())
     }
 
-    fun createGroup(name: String, membersAndPoints: List<Pair<User, Int>>): Observable<Any> {
-        return api.createGroup(currentId(), name, membersAndPoints)
+    fun createGroup(url: String?, name: String, membersAndPoints: List<Pair<User, Int>>): Observable<Any> {
+        return api.createGroup(currentId(), url, name, membersAndPoints)
                 .doOnError { it.printStackTrace() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -61,12 +64,10 @@ class Services(private val storageService: StorageService, private val api: Api 
                 .doOnError { it.printStackTrace() }
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-
-
     }
-    fun createUser(username: String, password: String, fullName: String): Observable<User> {
-        return api.createUser(username, password, fullName)
-                .map { User(it.id, username, fullName) }
+
+    fun createUser(username: String, password: String, fullName: String, currentImage: String?): Observable<User> {
+        return api.createUser(username, password, fullName, currentImage)
                 .doOnNext {
                     storageService.storeUser(it)
                     storageService.getUserToken()?.let(::postToken)
@@ -108,6 +109,13 @@ class Services(private val storageService: StorageService, private val api: Api 
                 .map { Any() }
     }
 
+    fun getGroupNotifications(groupId: Int): Observable<List<Api.Notification>> {
+        return api.getGroupNotifications(currentId(), groupId)
+                .doOnError { it.printStackTrace() }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
     fun postTokenIfPossible(token: String?) {
         if (token == null) {
             Log.e("FIREBASE", "Token is null")
@@ -119,6 +127,20 @@ class Services(private val storageService: StorageService, private val api: Api 
         } else {
             storageService.storeUserToken(token)
         }
+    }
+
+    fun addToGroup(groupId: Int): Observable<Group> {
+        return api.addToGroup(currentId(), groupId)
+                .doOnError { it.printStackTrace() }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    fun validateTask(groupId: Int, taskId: Int): Observable<ResponseBody> {
+        return api.validateTask(currentId(), groupId, taskId)
+                .doOnError { it.printStackTrace() }
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
     }
 
     @SuppressLint("CheckResult")
@@ -134,12 +156,26 @@ class Services(private val storageService: StorageService, private val api: Api 
                 )
     }
 
+    fun logout(context: Context): Observable<TaskStackBuilder> {
+        return api.deleteToken(currentId())
+                .map { Any() }
+                .onErrorReturn {  Any() }
+                .doOnNext {
+                    storageService.removeUser()
+                    storageService.removeUserToken()
+                }
+                .flatMap { ParseDeepLinkActivity.routeUser(context, null) }
+    }
+
+
     private fun currentId(): Int {
         val currentUser = storageService.getUser() ?: throw IllegalAccessError("No user stored")
         return currentUser.id
     }
 
     fun isLoggedIn() = storageService.getUser() != null
+
+    fun currentUser() = storageService.getUser()
 
     private fun isEmailValid(email: String) = email.contains("@")
 

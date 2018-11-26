@@ -1,12 +1,13 @@
 package dadm.frba.utn.edu.ar.quehaceres.fragments
 
+import android.support.v4.widget.CircularProgressDrawable
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import com.squareup.picasso.Picasso
+import com.facebook.drawee.view.SimpleDraweeView
 import dadm.frba.utn.edu.ar.quehaceres.R
 
 import dadm.frba.utn.edu.ar.quehaceres.models.User
@@ -37,7 +38,8 @@ class AllMembersAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = mValues[position]
 
-        Picasso.get().load(item.avatar).into(holder.avatar)
+        holder.avatar.hierarchy.setProgressBarImage(CircularProgressDrawable(holder.itemView.context))
+        holder.avatar.setImageURI(item.avatar)
         holder.username.text = item.email
         holder.fullName.text = item.fullName
 
@@ -56,7 +58,7 @@ class AllMembersAdapter(
     override fun getItemCount(): Int = mValues.size
 
     class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
-        val avatar: ImageView = mView.avatar
+        val avatar: SimpleDraweeView = mView.avatar
         val username: TextView = mView.username
         val fullName: TextView = mView.full_name
         val added: ImageView = mView.added

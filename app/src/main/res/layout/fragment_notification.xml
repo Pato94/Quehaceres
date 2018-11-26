@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout     xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="12dp">
 
@@ -13,40 +14,54 @@
          android:layout_marginTop="6dp"
          android:orientation="horizontal">
 
-         <de.hdodenhof.circleimageview.CircleImageView
-             android:layout_width="14dp"
-             android:layout_height="14dp"
-             android:src="@mipmap/ic_launcher" />
+         <com.facebook.drawee.view.SimpleDraweeView
+             android:id="@+id/avatar"
+             android:layout_width="24dp"
+             android:layout_height="24dp"
+             fresco:roundAsCircle="true"
+             tools:src="@mipmap/ic_launcher" />
 
          <TextView
-             android:id="@+id/tv_task_description"
+             android:id="@+id/producer_name"
              android:layout_width="wrap_content"
              android:layout_height="match_parent"
              android:textAppearance="?attr/textAppearanceListItem"
-             android:textSize="12sp"
-             android:layout_marginLeft="10dp"
+             android:layout_marginStart="12dp"
              android:layout_gravity="center_vertical"
              tools:text="Verificar Tarea 1" />
 
      </LinearLayout>
 
   <TextView
-      android:id="@+id/tv_task_headline"
+      android:id="@+id/message"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:layout_marginTop="@dimen/notification_text_margin"
       android:textAppearance="?attr/textAppearanceListItem"
       android:textSize="18sp"
-      tools:text="Limpieza de Baño"/>
+      tools:text="ESTE ES EL MENSAJE DE LA NOTIFICACION"/>
 
-  <TextView
-      android:id="@+id/tv_task_action"
-      android:layout_width="wrap_content"
-      android:layout_height="wrap_content"
-      android:layout_marginBottom="6dp"
-      android:textAppearance="?attr/textAppearanceListItem"
-      android:textColor="@color/description_color"
-      android:textSize="14sp"
-      tools:text="Verificar que se haya limpiado el baño"/>
+    <com.facebook.drawee.view.SimpleDraweeView
+        android:id="@+id/photo"
+        android:layout_width="match_parent"
+        android:layout_height="140dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone"
+        android:scaleType="centerCrop"
+        tools:visibility="visible"
+        tools:src="@color/accent"/>
+
+    <TextView
+        android:id="@+id/action"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:text="VALIDAR"
+        android:textSize="18sp"
+        android:textColor="@color/accent"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
 </LinearLayout>

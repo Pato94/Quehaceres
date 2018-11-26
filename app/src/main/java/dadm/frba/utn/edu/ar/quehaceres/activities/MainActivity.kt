@@ -19,7 +19,7 @@ import android.support.v7.widget.DividerItemDecoration
 import com.google.android.gms.common.util.CollectionUtils.isEmpty
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
 import dadm.frba.utn.edu.ar.quehaceres.services.Services
-
+import kotlinx.android.synthetic.main.nav_header_main.view.*
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -59,6 +59,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         nav_view.setNavigationItemSelectedListener(this)
+
+        val user = services.currentUser()
+        with(nav_view.getHeaderView(0)) {
+            avatar.setImageURI(user!!.avatar)
+            full_name.text = user.fullName
+            username.text = user.email
+        }
     }
 
     @SuppressLint("CheckResult")
@@ -100,25 +107,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
         when (item.itemId) {
-            R.id.nav_camera -> {
-                // Handle the camera action
-            }
-            R.id.nav_gallery -> {
-
-            }
-            R.id.nav_slideshow -> {
-
-            }
-            R.id.nav_manage -> {
-
-            }
-            R.id.nav_share -> {
-
-            }
-            R.id.nav_send -> {
-
+            R.id.logout -> {
+                services.logout(this)
+                        .subscribe { it.startActivities() }
             }
         }
 
