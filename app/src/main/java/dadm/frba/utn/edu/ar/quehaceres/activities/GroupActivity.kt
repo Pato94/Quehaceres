@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.PersistableBundle
 import android.provider.MediaStore
 import android.support.design.widget.TabLayout
 import android.support.v4.app.ActivityCompat
@@ -24,15 +23,9 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import com.facebook.drawee.view.SimpleDraweeView
-import dadm.frba.utn.edu.ar.quehaceres.OnTaskAssigned
-import dadm.frba.utn.edu.ar.quehaceres.OnTaskCreated
-import dadm.frba.utn.edu.ar.quehaceres.OnTaskVerified
-import dadm.frba.utn.edu.ar.quehaceres.R
+import dadm.frba.utn.edu.ar.quehaceres.*
 import dadm.frba.utn.edu.ar.quehaceres.api.Api
-import dadm.frba.utn.edu.ar.quehaceres.fragments.AvailableTasksFragment
-import dadm.frba.utn.edu.ar.quehaceres.fragments.CreateTaskDialog
-import dadm.frba.utn.edu.ar.quehaceres.fragments.InvitePeopleDialog
-import dadm.frba.utn.edu.ar.quehaceres.fragments.MyTasksFragment
+import dadm.frba.utn.edu.ar.quehaceres.fragments.*
 import dadm.frba.utn.edu.ar.quehaceres.services.Services
 import kotlinx.android.synthetic.main.activity_group.*
 import org.greenrobot.eventbus.EventBus
@@ -82,6 +75,8 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
                     if (currentId == it.id) it.copy(points = it.points - reward + 100)
                     else it
                 })
+
+        eventBus.post(OnGroupUpdated(group!!))
 
         services.createTask(group!!.id, name, reward)
                 .subscribe(
@@ -281,12 +276,13 @@ class GroupActivity : AppCompatActivity(), AvailableTasksFragment.Listener, MyTa
         override fun getItem(position: Int): Fragment {
             return when (position) {
                 0 -> AvailableTasksFragment.newInstance(group!!.id)
-                else -> MyTasksFragment.newInstance(group!!.id)
+                1 -> MyTasksFragment.newInstance(group!!.id)
+                else -> GroupFragment.newInstance(group!!)
             }
         }
 
         override fun getCount(): Int {
-            return 2
+            return 3
         }
     }
 }

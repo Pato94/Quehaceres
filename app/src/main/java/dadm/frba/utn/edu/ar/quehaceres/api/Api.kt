@@ -84,7 +84,7 @@ class Api {
 
     private fun bytesFromBitmap(bitmap: Bitmap): ByteArray {
         val stream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, stream)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 95, stream)
         return stream.toByteArray()
     }
 
@@ -141,7 +141,8 @@ class Api {
 
     data class LoginRequest(val username: String, val password: String)
 
-    data class RemoteUser(val id: Int, val username: String, val password: String, val fullName: String, val photoUrl: String)
+    @Parcelize
+    data class RemoteUser(val id: Int, val username: String, val password: String, val fullName: String, val photoUrl: String): Parcelable
 
     data class CreateGroupRequest(val name: String, val members: List<UserAndPoints>)
 
@@ -153,7 +154,13 @@ class Api {
     data class UserAndPoints(val id: Int, val points: Int): Parcelable
 
     @Parcelize
-    data class Group(val id: Int, val name: String, val members: List<UserAndPoints>, val tasks: List<MemberTasks>?) : Parcelable {
+    data class Member(val id: Int, val user: RemoteUser, val points: Int): Parcelable {
+        @IgnoredOnParcel
+        val actualUser = User(user)
+    }
+
+    @Parcelize
+    data class Group(val id: Int, val name: String, val members: List<Member>, val tasks: List<MemberTasks>?) : Parcelable {
         @IgnoredOnParcel
         val avatar = "https://api.adorable.io/avatars/64/grouperino.png"
     }
