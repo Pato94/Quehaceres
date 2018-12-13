@@ -5,13 +5,13 @@ Una vez creada una tarea, un usuario podrá asignarsela y luego verificar median
 
 
 Lista de grupos:
-![Alt text](/images/3.png)
+![Alt text](/images/3.PNG)
 
 Creación de grupo:
-![Alt text](/images/2.png)
+![Alt text](/images/2.PNG)
 
 Lista de tareas:
-![Alt text](/images/5.png)
+![Alt text](/images/5.PNG)
 
 Creación de tarea:
-![Alt text](/images/4.png)
+![Alt text](/images/4.PNG)
